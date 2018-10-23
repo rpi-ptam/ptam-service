@@ -36,9 +36,9 @@ export class Application implements Runnable {
   }
 
   public async stop(): Promise<void> {
-    await this.webServer.stop();
+    this.webServer.stop();
     await this.repoRegistry.stop();
-    await this.cacheRegistry.stop();
+    this.cacheRegistry.stop();
   }
 
 }

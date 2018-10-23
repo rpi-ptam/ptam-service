@@ -33,7 +33,7 @@ export class CacheRegistry implements Runnable {
     await this.verdictsCache.fill();
   }
 
-  async stop(): Promise<void> {
+  stop(): void {
     this.lotsCache.flush();
     this.rolesCache.flush();
     this.statesCache.flush();

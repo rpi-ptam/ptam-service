@@ -47,7 +47,7 @@ export class WebServer implements Runnable {
     this.httpInstance = this.application.listen(this.port);
   }
 
-  public stop() {
+  public stop(): void {
     if (this.httpInstance) this.httpInstance.close();
   }
 
