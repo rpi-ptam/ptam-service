@@ -1,0 +1,19 @@
+{
+  "name": "@rpi-ptam/service",
+  "version": "0.0.1",
+  "description": "backend for ptam frontend",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpi-ptam/ptam-service.git"
+  },
+  "author": "Aaron J. Shapiro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rpi-ptam/ptam-service/issues"
+  },
+  "homepage": "https://github.com/rpi-ptam/ptam-service#readme"
+}
