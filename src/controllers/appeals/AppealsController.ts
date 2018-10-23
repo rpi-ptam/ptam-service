@@ -19,7 +19,6 @@ import {
   PARKING_OFFICE_OFFICIAL
 } from "../../contants/Roles";
 
-
 /**
  * Appeals Controller
  */
@@ -45,7 +44,7 @@ export class AppealsController {
    */
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR, PARKING_OFFICE_OFFICIAL)
-  @RequiredParams("ticket_id")
+  @RequiredParams("ticketId")
   public async getAppeal(req: Request, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
     const { ticketId } = req.query;
