@@ -2,7 +2,7 @@
 
 import { Router } from "express";
 
-export abstract class RouterController {
+export abstract class ControllerRouter {
 
   public readonly router: Router;
 

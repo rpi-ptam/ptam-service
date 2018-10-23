@@ -1,7 +1,7 @@
 "use strict";
 
-import {RepositoryRegistry} from "../../src/registries/RepositoryRegistry";
-import {LotsCache} from "../../src/caches/LotsCache";
+import { RepositoryRegistry } from "../../src/registries/RepositoryRegistry";
+import { LotsCache } from "../../src/caches/LotsCache";
 
 describe("LotsRepository", () => {
 
