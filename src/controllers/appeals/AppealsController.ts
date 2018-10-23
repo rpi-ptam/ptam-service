@@ -68,9 +68,19 @@ export class AppealsController {
   }
 
   @bind
-  public async getAppeals(req: Request, res: Response): Promise<void> {
-    void (req);
-    res.status(500).json({ success: false, error: "UNIMPLEMENTED_ENDPOINT" });
+  @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR, PARKING_OFFICE_OFFICIAL)
+  @RequiredParams("start", "count")
+  public async getAppealsBulk(req: Request, res: Response): Promise<void> {
+    const { appealsRepository } = this.repoRegistry;
+    const { start, count } = req.query;
+    try {
+      const appealTicketPairs = await appealsRepository.getAppealsBulk(start, count);
+      res.status(200).json({ success: true, appeals: appealTicketPairs });
+    }
+    catch (error) {
+      Logger.error(error);
+      res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
+    }
   }
 
   /**

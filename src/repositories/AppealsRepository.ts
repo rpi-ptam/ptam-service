@@ -45,16 +45,16 @@ export class AppealsRepository extends Repository {
   }
 
   public async getDecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealsBulkSelectBase() +
-      "WHERE a_reviewed_by IS NOT NULL AND a.id >= $2 " +
-      "ORDER BY a_id DESC LIMIT $3";
+    const statement = this.getAppealsBulkSelectBase()
+      + "WHERE a_reviewed_by IS NOT NULL AND a.id >= $2 "
+      + "ORDER BY a_id DESC LIMIT $3";
     const result = await this.postgresDriver.query(statement, [start, count]);
     return this.normalizeBulkResult(result);
   }
 
   public async getAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealsBulkSelectBase() +
-      "WHERE a.id >= $2 ORDER BY a_id DESC LIMIT $3";
+    const statement = this.getAppealsBulkSelectBase()
+      + "WHERE a.id >= $1 ORDER BY a_id DESC LIMIT $2";
     const result = await this.postgresDriver.query(statement, [start, count]);
     return this.normalizeBulkResult(result);
   }
@@ -64,7 +64,8 @@ export class AppealsRepository extends Repository {
       "a.appealed_at as a_appealed_at, a.verdict_id as a_verdict_id, a.verdict_comment as a_verdict_comment, " +
       "a.reviewed_by as a_reviewed_by, a.reviewed_at as a_reviewed_at, t.id as t_id, t.violator_id as t_violator_id, " +
       "t.external_id as t_external_id, t.lot_id as t_lot_id, t.make as t_make, t.model as t_model, t.tag as t_tag, " +
-      "t.plate_state_id as t_plate_state_id, t.amount as t_amount, t.issued_at as t_issued_at ";
+      "t.plate_state_id as t_plate_state_id, t.amount as t_amount, t.issued_at as t_issued_at " +
+      "FROM appeals a INNER JOIN tickets t ON a.ticket_id = t.id ";
   }
 
   private normalizeBulkAppeal(row: any): Appeal {
