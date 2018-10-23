@@ -24,8 +24,6 @@ export class AppealsRouter extends ControllerRouter {
   protected addRoutes(): void {
     this.router.get("/get", this.controller.getAppeal);
     this.router.get("/bulk/get", this.controller.getAppealsBulk);
-    // this.router.get("/bulk/get-decided", this.controller.getAppeal);
-    // this.router.get("/bulk/get-undecided", this.controller.getAppeal);
     this.router.post("/create", this.controller.createAppeal);
   }
 

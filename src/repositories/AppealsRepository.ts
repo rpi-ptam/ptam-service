@@ -38,16 +38,16 @@ export class AppealsRepository extends Repository {
 
   public async getUndecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
     const statement = this.getAppealsBulkSelectBase() +
-      "WHERE a_reviewed_by IS NULL AND a.id >= $2 " +
-      "ORDER BY a_id DESC LIMIT $3";
+      "WHERE a.reviewed_by IS NULL AND a.id >= $1 " +
+      "ORDER BY a_id DESC LIMIT $2";
     const result = await this.postgresDriver.query(statement, [start, count]);
     return this.normalizeBulkResult(result);
   }
 
   public async getDecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
     const statement = this.getAppealsBulkSelectBase()
-      + "WHERE a_reviewed_by IS NOT NULL AND a.id >= $2 "
-      + "ORDER BY a_id DESC LIMIT $3";
+      + "WHERE a.reviewed_by IS NOT NULL AND a.id >= $1 "
+      + "ORDER BY a_id DESC LIMIT $2";
     const result = await this.postgresDriver.query(statement, [start, count]);
     return this.normalizeBulkResult(result);
   }

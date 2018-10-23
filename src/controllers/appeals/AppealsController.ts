@@ -74,6 +74,14 @@ export class AppealsController {
     const { appealsRepository } = this.repoRegistry;
     const { start, count } = req.query;
     try {
+      /* The request specifies whether the appeals should be decided, filter accordingly */
+      if (req.query.hasOwnProperty("decided")) {
+        const appealTicketPairs = req.query.decided === 'true' ? await appealsRepository.getDecidedAppealsBulk(start, count) :
+          await appealsRepository.getUndecidedAppealsBulk(start, count);
+        res.status(200).json({ success: true, appeals: appealTicketPairs });
+        return;
+      }
+      /* Otherwise be agnostic and get all */
       const appealTicketPairs = await appealsRepository.getAppealsBulk(start, count);
       res.status(200).json({ success: true, appeals: appealTicketPairs });
     }
