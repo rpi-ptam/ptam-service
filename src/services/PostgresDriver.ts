@@ -5,7 +5,7 @@ import { DatabaseDriver } from "../definitions/DatabaseDriver";
 
 /**
  * Postgres Driver Implementation
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class PostgresDriver extends DatabaseDriver {
 

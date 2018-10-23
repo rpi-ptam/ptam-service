@@ -4,7 +4,7 @@ import { DummyTwoWayCache } from "../_implementations/DummyTwoWayCache";
 
 /**
  * Cache Test Suite
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 describe("Cache", () => {
 

@@ -10,7 +10,7 @@ import { VerdictsCache } from "../caches/VerdictsCache";
 
 /**
  * Cache Registry (mappings)
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class CacheRegistry implements Runnable {
 

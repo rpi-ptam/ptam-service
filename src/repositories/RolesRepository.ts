@@ -5,7 +5,7 @@ import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Roles Repository
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class RolesRepository extends Repository {
 

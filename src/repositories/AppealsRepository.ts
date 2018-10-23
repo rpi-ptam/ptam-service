@@ -5,7 +5,7 @@ import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Appeals Repository
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class AppealsRepository extends Repository {
 

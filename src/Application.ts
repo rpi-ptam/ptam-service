@@ -12,7 +12,7 @@ const WEB_SERVER_PORT: number = config.get("port");
 
 /**
  * Outer Application Wrapper
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class Application implements Runnable {
 

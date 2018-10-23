@@ -4,7 +4,7 @@ import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Abstract Repository Class
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export abstract class Repository {
 

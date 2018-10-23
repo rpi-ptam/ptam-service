@@ -7,7 +7,7 @@ import { ControllerRouter } from "../../definitions/ControllerRouter";
 
 /**
  * States Controller Router
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class StatesRouter extends ControllerRouter {
 

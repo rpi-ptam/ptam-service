@@ -1,12 +1,15 @@
 "use strict";
 
-import {TwoWayCache} from "../definitions/TwoWayCache";
-import {RepositoryRegistry} from "../registries/RepositoryRegistry";
+import { TwoWayCache } from "../definitions/TwoWayCache";
+import { RepositoryRegistry } from "../registries/RepositoryRegistry";
 
+/**
+ * State Enum Cache
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
+ */
 export class StatesCache extends TwoWayCache<number,string> {
 
   private readonly repoRegistry: RepositoryRegistry;
-  private statesLiteral: any;
 
   constructor(repoRegistry: RepositoryRegistry) {
     super();
@@ -16,16 +19,6 @@ export class StatesCache extends TwoWayCache<number,string> {
   async fill(): Promise<void> {
     const statesRepository = this.repoRegistry.statesRepository;
     this.map = await statesRepository.getAllStates();
-
-    this.statesLiteral = {};
-    for (let id of this.map.keys()) {
-      this.statesLiteral[id] = this.map.get(id);
-    }
-  }
-
-  public toLiteral(): object {
-    if (!this.statesLiteral) throw Error("cache has not been instantiated");
-    return this.statesLiteral;
   }
 
 }

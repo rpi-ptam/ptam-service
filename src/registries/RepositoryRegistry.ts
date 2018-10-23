@@ -21,7 +21,7 @@ const DATABASE_NAME: string = config.get("database.database");
 
 /**
  * Repository Registry (for dependency injection)
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class RepositoryRegistry implements Runnable {
 

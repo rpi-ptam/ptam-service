@@ -2,7 +2,7 @@
 
 /**
  * Two-Way Cache (Keys and Values are UQ)
- * @author Aaron J. Shapiro <aaron@babaco.com>
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export abstract class TwoWayCache<K,V> {
 
@@ -13,6 +13,11 @@ export abstract class TwoWayCache<K,V> {
   public get length(): number {
     if (!this.map) throw Error("cache has not been filled");
     return this.map.size;
+  }
+
+  public values(): Array<V> {
+    if (!this.map) throw Error("cache has not been filled");
+    return Array.from(this.map.values());
   }
 
   public flush(): void {

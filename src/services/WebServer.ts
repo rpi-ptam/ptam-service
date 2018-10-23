@@ -4,9 +4,15 @@ import http from "http";
 import express from "express";
 
 import { Runnable } from "../definitions/Runnable";
-import { StatesRouter } from "../controllers/states/StatesRouter";
 import { CacheRegistry } from "../registries/CacheRegistry";
 
+import { LotsRouter } from "../controllers/lots/LotsRouter";
+import { StatesRouter } from "../controllers/states/StatesRouter";
+
+/**
+ * Express Web-Server Wrapper
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
+ */
 export class WebServer implements Runnable {
 
   private readonly port: number;
@@ -22,7 +28,10 @@ export class WebServer implements Runnable {
   }
 
   public addRouters() {
+    const lotsRouter = new LotsRouter(this.cacheRegistry);
     const statesRouter = new StatesRouter(this.cacheRegistry);
+
+    this.application.use("/lots", lotsRouter.router);
     this.application.use("/states", statesRouter.router);
   }
 

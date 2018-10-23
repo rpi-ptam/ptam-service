@@ -2,8 +2,10 @@
 
 import { Request, Response } from "express";
 import { CacheRegistry } from "../../registries/CacheRegistry";
-import {Logger} from "../../services/Logger";
+import { Logger } from "../../services/Logger";
 import bind from "bind-decorator";
+import {roles} from "../../decorator/RolesDecorator";
+import {STUDENT} from "../../contants/Roles";
 
 export class StatesController {
 
@@ -14,11 +16,11 @@ export class StatesController {
   }
 
   @bind
+  @roles(STUDENT)
   public getStates(req: Request, res: Response): void {
     void (req);
-
     try {
-      const states = this.cacheRegistry.statesCache.toLiteral();
+      const states = this.cacheRegistry.statesCache.values();
       res.status(200).json({ success: true, states });
     }
     catch (error) {
