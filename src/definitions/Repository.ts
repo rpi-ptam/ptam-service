@@ -1,6 +1,6 @@
 "use strict";
 
-import { DatabaseDriver } from "./DatabaseDriver";
+import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Abstract Repository Class
@@ -8,10 +8,10 @@ import { DatabaseDriver } from "./DatabaseDriver";
  */
 export abstract class Repository {
 
-  protected readonly databaseDriver: DatabaseDriver;
+  protected readonly postgresDriver: PostgresDriver;
 
-  protected constructor(databaseDriver: DatabaseDriver) {
-    this.databaseDriver = databaseDriver;
+  protected constructor(postgresDriver: PostgresDriver) {
+    this.postgresDriver = postgresDriver;
   }
 
 }

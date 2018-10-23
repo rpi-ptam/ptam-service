@@ -2,9 +2,24 @@
   "name": "@rpi-ptam/service",
   "version": "0.0.1",
   "description": "backend for ptam frontend",
-  "main": "dist/index.js",
   "scripts": {
+    "prestart": "npm run build",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "nodemon --ext ts --exec ts-node ./src/index.ts",
     "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json"
+    ]
   },
   "repository": {
     "type": "git",
@@ -17,29 +32,30 @@
   },
   "homepage": "https://github.com/rpi-ptam/ptam-service#readme",
   "dependencies": {
-    "@types/body-parser": "^1.17.0",
-    "@types/express": "^4.16.0",
-    "@types/helmet": "0.0.42",
-    "@types/jest": "^23.3.7",
-    "@types/pg": "^7.4.11",
-    "@types/request-promise": "^4.1.42",
     "body-parser": "^1.18.3",
     "config": "^2.0.1",
     "cors": "^2.8.4",
     "express": "^4.16.4",
     "helmet": "^3.14.0",
     "moment": "^2.22.2",
+    "pg": "^7.5.0"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/config": "0.0.34",
+    "@types/cors": "^2.8.4",
+    "@types/express": "^4.16.0",
+    "@types/helmet": "0.0.42",
+    "@types/jest": "^23.3.7",
+    "@types/pg": "^7.4.11",
+    "@types/request-promise": "^4.1.42",
+    "bind-decorator": "^1.0.11",
+    "jest": "^23.6.0",
     "nodemon": "^1.18.4",
-    "pg": "^7.5.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "ts-jest": "^23.10.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.1.3"
-  },
-  "devDependencies": {
-    "@types/config": "0.0.34",
-    "@types/cors": "^2.8.4",
-    "bind-decorator": "^1.0.11"
   }
 }

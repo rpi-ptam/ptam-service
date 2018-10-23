@@ -1,7 +1,7 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { DatabaseDriver } from "../definitions/DatabaseDriver";
+import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * States Repository
@@ -9,8 +9,21 @@ import { DatabaseDriver } from "../definitions/DatabaseDriver";
  */
 export class StatesRepository extends Repository {
 
-  constructor(databaseDriver: DatabaseDriver) {
-    super(databaseDriver);
+  constructor(postgresDriver: PostgresDriver) {
+    super(postgresDriver);
+  }
+
+  public async getAllStates(): Promise<Map<number,string>> {
+    const statement = "SELECT id, abbreviation FROM states";
+    const statesResult = await this.postgresDriver.query(statement);
+
+    const statesMap = new Map<number,string>();
+    for (let i = 0; i < statesResult.rowCount; i++) {
+      const stateLiteral: any = statesResult.rows[i];
+      statesMap.set(stateLiteral.id, stateLiteral.abbreviation);
+    }
+
+    return statesMap;
   }
 
 }

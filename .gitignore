@@ -1,4 +1,8 @@
+# Use Case
 .idea/
+config/development.json
+config/test.json
+
 # Logs
 logs
 *.log

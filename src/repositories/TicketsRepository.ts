@@ -1,7 +1,7 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { DatabaseDriver } from "../definitions/DatabaseDriver";
+import {PostgresDriver} from "../services/PostgresDriver";
 
 /**
  * Tickets Repository
@@ -9,7 +9,7 @@ import { DatabaseDriver } from "../definitions/DatabaseDriver";
  */
 export class TicketsRepository extends Repository {
 
-  constructor(databaseDriver: DatabaseDriver) {
+  constructor(databaseDriver: PostgresDriver) {
     super(databaseDriver);
   }
 

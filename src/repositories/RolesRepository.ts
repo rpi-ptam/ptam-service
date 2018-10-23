@@ -1,7 +1,7 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { DatabaseDriver } from "../definitions/DatabaseDriver";
+import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Roles Repository
@@ -9,8 +9,21 @@ import { DatabaseDriver } from "../definitions/DatabaseDriver";
  */
 export class RolesRepository extends Repository {
 
-  constructor(databaseDriver: DatabaseDriver) {
-    super(databaseDriver);
+  constructor(postgresDriver: PostgresDriver) {
+    super(postgresDriver);
+  }
+
+  public async getAllRoles(): Promise<Map<number,string>> {
+    const statement = "SELECT id, name FROM roles";
+    const rolesResult = await this.postgresDriver.query(statement);
+
+    const rolesMap = new Map<number,string>();
+    for (let i = 0; i < rolesResult.rowCount; i++) {
+      const roleLiteral: any = rolesResult.rows[i];
+      rolesMap.set(roleLiteral.id, roleLiteral.name);
+    }
+
+    return rolesMap;
   }
 
 }

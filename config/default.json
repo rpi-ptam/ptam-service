@@ -1,0 +1,14 @@
+{
+  "port": 8080,
+  "debug": false,
+  "client": {
+    "allowedDomains": []
+  },
+  "database": {
+    "host": "",
+    "port": 5432,
+    "user": "",
+    "password": "",
+    "database": ""
+  }
+}

@@ -1,8 +1,7 @@
 "use strict";
 
-import { Pool, PoolConfig } from "pg";
+import { Pool, PoolConfig, QueryResult } from "pg";
 import { DatabaseDriver } from "../definitions/DatabaseDriver";
-import { Logger } from "./Logger";
 
 /**
  * Postgres Driver Implementation
@@ -28,7 +27,7 @@ export class PostgresDriver extends DatabaseDriver {
     this.database = database;
   }
 
-  public async query(statement: string, values?: Array<string | number | null>): Promise<any> {
+  public async query(statement: string, values?: Array<string | number | null>): Promise<QueryResult> {
     if (!this.instance) throw Error("postgres client has not been instantiated");
     const client = await this.instance.connect();
 
@@ -38,7 +37,7 @@ export class PostgresDriver extends DatabaseDriver {
       result = await client.query(statement, values || []);
     }
     catch (error) {
-      Logger.error(error);
+      throw error;
     }
     finally {
       client.release();

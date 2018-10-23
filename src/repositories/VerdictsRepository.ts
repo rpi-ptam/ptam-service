@@ -1,7 +1,7 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { DatabaseDriver } from "../definitions/DatabaseDriver";
+import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Verdicts Repository
@@ -9,8 +9,21 @@ import { DatabaseDriver } from "../definitions/DatabaseDriver";
  */
 export class VerdictsRepository extends Repository {
 
-  constructor(databaseDriver: DatabaseDriver) {
-    super(databaseDriver);
+  constructor(postgresDriver: PostgresDriver) {
+    super(postgresDriver);
+  }
+
+  public async getAllVerdicts(): Promise<Map<number,string>> {
+    const statement = "SELECT id, value FROM verdicts";
+    const verdictsResult = await this.postgresDriver.query(statement);
+
+    const verdictsMap = new Map<number,string>();
+    for (let i = 0; i < verdictsResult.rowCount; i++) {
+      const verdictLiteral: any = verdictsResult.rows[i];
+      verdictsMap.set(verdictLiteral.id, verdictLiteral.value);
+    }
+
+    return verdictsMap;
   }
 
 }
