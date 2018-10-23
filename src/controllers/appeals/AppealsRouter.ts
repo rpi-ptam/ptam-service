@@ -22,6 +22,7 @@ export class AppealsRouter extends ControllerRouter {
   }
 
   protected addRoutes(): void {
+    this.router.get("/get", this.controller.getAppeal);
     this.router.post("/create", this.controller.createAppeal);
   }
 

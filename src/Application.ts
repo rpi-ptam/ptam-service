@@ -23,7 +23,7 @@ export class Application implements Runnable {
   constructor() {
     this.repoRegistry = new RepositoryRegistry();
     this.cacheRegistry = new CacheRegistry(this.repoRegistry);
-    this.webServer = new WebServer(WEB_SERVER_PORT, this.cacheRegistry);
+    this.webServer = new WebServer(WEB_SERVER_PORT, this.repoRegistry, this.cacheRegistry);
   }
 
   public async start(): Promise<void> {

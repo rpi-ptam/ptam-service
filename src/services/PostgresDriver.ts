@@ -27,7 +27,7 @@ export class PostgresDriver extends DatabaseDriver {
     this.database = database;
   }
 
-  public async query(statement: string, values?: Array<string | number | null>): Promise<QueryResult> {
+  public async query(statement: string, values?: Array<string | number | null | boolean>): Promise<QueryResult> {
     if (!this.instance) throw Error("postgres client has not been instantiated");
     const client = await this.instance.connect();
 

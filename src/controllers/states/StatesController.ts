@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { CacheRegistry } from "../../registries/CacheRegistry";
 import { Logger } from "../../services/Logger";
 import bind from "bind-decorator";
-import {roles} from "../../decorator/RolesDecorator";
+import {Roles} from "../../decorator/RolesDecorator";
 import {STUDENT} from "../../contants/Roles";
 
 export class StatesController {
@@ -16,7 +16,7 @@ export class StatesController {
   }
 
   @bind
-  @roles(STUDENT)
+  @Roles(STUDENT)
   public getStates(req: Request, res: Response): void {
     void (req);
     try {

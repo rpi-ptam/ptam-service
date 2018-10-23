@@ -3,13 +3,6 @@
 import { TwoWayCache } from "../definitions/TwoWayCache";
 import { RepositoryRegistry } from "../registries/RepositoryRegistry";
 
-import {
-  ADMINISTRATOR,
-  JUDICIAL_BOARD_CHAIR,
-  JUDICIAL_BOARD_MEMBER,
-  PARKING_OFFICE_OFFICIAL
-} from "../contants/Roles";
-
 /**
  * Role Cache
  * @author Aaron J. Shapiro <shapia4@rpi.edu>

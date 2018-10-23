@@ -14,7 +14,7 @@ export class RolesRepository extends Repository {
   }
 
   public async getAllRoles(): Promise<Map<number,string>> {
-    const statement = "SELECT id, name FROM roles";
+    const statement = "SELECT id, name FROM Roles";
     const rolesResult = await this.postgresDriver.query(statement);
 
     const rolesMap = new Map<number,string>();
