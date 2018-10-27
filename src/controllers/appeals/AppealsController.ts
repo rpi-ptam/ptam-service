@@ -45,14 +45,14 @@ export class AppealsController {
    */
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR, PARKING_OFFICE_OFFICIAL)
-  @RequiredParams("ticketId")
+  @RequiredParams("ticket_id")
   public async getAppeal(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
-    const { ticketId } = req.query;
+    const { ticket_id } = req.query;
 
     try {
       /* Try to get the appeal by the ticket identifier */
-      const appeal = await appealsRepository.getByTicketId(ticketId);
+      const appeal = await appealsRepository.getByTicketId(ticket_id);
 
       /* If there is no appeal, fail safely */
       if (appeal === null) {
@@ -148,13 +148,16 @@ export class AppealsController {
    */
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR)
-  @RequiredParams("ticket_id", "verdict_id")
+  @RequiredParams("ticket_id", "verdict")
   public async createVerdict(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
-    const { ticketId, verdictId, verdictComment } = req.body;
+    const { ticketId, verdict, verdictComment } = req.body;
 
     try {
       if (!req.user) throw Error("token mismatch");
+
+      const verdictId = this.cacheRegistry.verdictsCache.getByValue(verdict);
+      if (!verdictId) throw Error("verdict mismatch");
 
       /* Verify that the underlying appeal exists */
       const appeal = await appealsRepository.getByTicketId(ticketId);

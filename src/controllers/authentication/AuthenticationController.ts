@@ -90,7 +90,7 @@ export class AuthenticationController {
   public logout(req: Request, res: Response) {
     void (req);
     res.clearCookie("x-access-token");
-    res.redirect("/logout-success");
+    res.redirect(CLIENT_FRIENDLY_URL + "/logout-success");
   }
 
 }
