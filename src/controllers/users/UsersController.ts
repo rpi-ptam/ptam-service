@@ -1,11 +1,18 @@
+import bind from "bind-decorator";
 import { Response } from "express";
+
+import { User } from "../../definitions/types/User";
+import { AuthorizedRequest } from "../../definitions/AuthorizedRequest";
+
+import { Logger } from "../../services/Logger";
 
 import { CacheRegistry } from "../../registries/CacheRegistry";
 import { RepositoryRegistry } from "../../registries/RepositoryRegistry";
-import { AuthorizedRequest } from "../../definitions/AuthorizedRequest";
-import {Logger} from "../../services/Logger";
-import bind from "bind-decorator";
 
+/**
+ * Users Router Controller
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
+ */
 export class UsersController {
 
   private readonly repoRegistry: RepositoryRegistry;
@@ -29,18 +36,23 @@ export class UsersController {
         req.clearCookie("x-access-token");
         return;
       }
-      const role = this.cacheRegistry.rolesCache.getByKey(user.role_id);
-      const friendlyUser = {
-        ...user,
-        role,
-        id: undefined,
-        role_id: undefined
-       };
+
+      const friendlyUser = this.getFriendlyUser(user);
       res.status(200).json( { success: true, user: friendlyUser })
     }
     catch (error) {
       res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
     }
+  }
+
+  private getFriendlyUser(user: User) {
+    const role = this.cacheRegistry.rolesCache.getByKey(user.role_id);
+    return {
+      ...user,
+      role,
+      id: undefined,
+      role_id: undefined
+    };
   }
 
 }
