@@ -1,15 +1,29 @@
 "use strict";
 
 import http from "http";
+import config from "config";
 import express from "express";
 
 import { Runnable } from "../definitions/Runnable";
 import { CacheRegistry } from "../registries/CacheRegistry";
+import { RepositoryRegistry } from "../registries/RepositoryRegistry";
 
 import { LotsRouter } from "../controllers/lots/LotsRouter";
 import { StatesRouter } from "../controllers/states/StatesRouter";
-import {AppealsRouter} from "../controllers/appeals/AppealsRouter";
-import {RepositoryRegistry} from "../registries/RepositoryRegistry";
+import { AppealsRouter } from "../controllers/appeals/AppealsRouter";
+import {ClientConfig} from "logical-cas-client";
+import {AuthenticationRouter} from "../controllers/authentication/AuthenticationRouter";
+import {KeyStore} from "../stores/KeyStore";
+
+const SERVICE_HOST: string = config.get("host");
+const SERVICE_SECURE: boolean = config.get("secure");
+
+const CAS_HOST: string = config.get("cas.host");
+const CAS_SECURE: boolean = config.get("cas.secure");
+
+const JWT_PRIVATE_KEY: string = config.get("auth.privateKey");
+const JWT_PUBLIC_KEY: string = config.get("auth.publicKey");
+const JWT_ALGO: string = config.get("auth.algorithm");
 
 /**
  * Express Web-Server Wrapper
@@ -21,6 +35,8 @@ export class WebServer implements Runnable {
   private readonly cacheRegistry: CacheRegistry;
   private readonly repoRegistry: RepositoryRegistry;
 
+  private readonly keyStore: KeyStore;
+
   private readonly application: express.Application;
   private httpInstance: http.Server | undefined;
 
@@ -28,10 +44,35 @@ export class WebServer implements Runnable {
     this.port = port;
     this.repoRegistry = repoRegistry;
     this.cacheRegistry = cacheRegistry;
+
+    this.keyStore = new KeyStore(JWT_PUBLIC_KEY, JWT_PRIVATE_KEY, JWT_ALGO);
+
     this.application = express();
   }
 
+  /**
+   * Configure CAS
+   */
+  public addAuthenticationRouter() {
+    const casConfig: ClientConfig = {
+      host: SERVICE_HOST,
+      port: this.port,
+      secure: SERVICE_SECURE,
+      endpoints: {
+        ticketVerificationPath: "/authentication/ticket-verify"
+      },
+      server: {
+        host: CAS_HOST,
+        secure: CAS_SECURE,
+        version: "2.0"
+      }
+    };
+    const authRouter = new AuthenticationRouter(this.repoRegistry, this.cacheRegistry, this.keyStore, casConfig);
+    this.application.use("/authentication", authRouter.router);
+  }
+
   public addRouters() {
+    this.addAuthenticationRouter();
     const appealsRouter = new AppealsRouter(this.repoRegistry, this.cacheRegistry);
     const lotsRouter = new LotsRouter(this.cacheRegistry);
     const statesRouter = new StatesRouter(this.cacheRegistry);
@@ -44,6 +85,7 @@ export class WebServer implements Runnable {
   public start(): void {
     this.addRouters();
     this.application.set("cacheRegistry", this.cacheRegistry);
+    this.application.set("keyStore", this.keyStore);
     this.httpInstance = this.application.listen(this.port);
   }
 

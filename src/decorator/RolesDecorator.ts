@@ -1,7 +1,7 @@
 "use strict";
 
 import { Request, Response } from "express";
-import {CacheRegistry} from "../registries/CacheRegistry";
+import { CacheRegistry } from "../registries/CacheRegistry";
 
 /**
  * Roles Middleware Decorator
@@ -19,7 +19,7 @@ export function Roles(...roles: Array<string>): Function {
     void (target);
     void (propertyKey);
     let method = descriptor.value;
-    descriptor.value = function (req: Request, res: Response) {
+    descriptor.value = async function (req: Request, res: Response) {
       /* TODO: Verify Actual User Role! */
       const userRoleId = 3;
 

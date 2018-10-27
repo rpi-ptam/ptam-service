@@ -37,6 +37,8 @@
     "cors": "^2.8.4",
     "express": "^4.16.4",
     "helmet": "^3.14.0",
+    "jsonwebtoken": "^8.3.0",
+    "logical-cas-client": "0.0.4",
     "moment": "^2.22.2",
     "pg": "^7.5.0"
   },
@@ -47,6 +49,7 @@
     "@types/express": "^4.16.0",
     "@types/helmet": "0.0.42",
     "@types/jest": "^23.3.7",
+    "@types/jsonwebtoken": "^7.2.8",
     "@types/pg": "^7.4.11",
     "@types/request-promise": "^4.1.42",
     "bind-decorator": "^1.0.11",

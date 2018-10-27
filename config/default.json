@@ -1,8 +1,11 @@
 {
+  "host": "localhost",
   "port": 8080,
+  "secure": false,
   "debug": false,
   "client": {
-    "allowedDomains": []
+    "allowedDomains": [],
+    "friendlyUrl": ""
   },
   "database": {
     "host": "",
@@ -10,5 +13,16 @@
     "user": "",
     "password": "",
     "database": ""
+  },
+  "cas": {
+    "host": "",
+    "secure": true,
+    "version": "2.0"
+  },
+  "auth": {
+    "privateKey": "",
+    "publicKey": "",
+    "algorithm": "",
+    "tokenDurationHours": 24
   }
 }
