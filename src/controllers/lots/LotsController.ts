@@ -1,9 +1,8 @@
-"use strict";
-
-import { Request, Response } from "express";
-import { CacheRegistry } from "../../registries/CacheRegistry";
-import { Logger } from "../../services/Logger";
 import bind from "bind-decorator";
+import { Request, Response } from "express";
+
+import { Logger } from "../../services/Logger";
+import { CacheRegistry } from "../../registries/CacheRegistry";
 
 export class LotsController {
 

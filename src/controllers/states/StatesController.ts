@@ -1,11 +1,10 @@
 "use strict";
 
-import { Request, Response } from "express";
-import { CacheRegistry } from "../../registries/CacheRegistry";
-import { Logger } from "../../services/Logger";
 import bind from "bind-decorator";
-import {Roles} from "../../decorator/RolesDecorator";
-import {STUDENT} from "../../contants/Roles";
+import { Request, Response } from "express";
+
+import { Logger } from "../../services/Logger";
+import { CacheRegistry } from "../../registries/CacheRegistry";
 
 export class StatesController {
 
@@ -16,7 +15,6 @@ export class StatesController {
   }
 
   @bind
-  @Roles(STUDENT)
   public getStates(req: Request, res: Response): void {
     void (req);
     try {
