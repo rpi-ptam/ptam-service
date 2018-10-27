@@ -109,6 +109,8 @@ export class AppealsController {
     const { ticketId, justification } = req.body;
 
     try {
+      if (!req.user) throw Error("token mismatch");
+
       /* Verify that the underlying ticket exists */
       const ticket = await ticketsRepository.getById(ticketId);
       /* If the referenced ticket does not exist, there cannot be an appeal */
@@ -152,6 +154,8 @@ export class AppealsController {
     const { ticketId, verdictId, verdictComment } = req.body;
 
     try {
+      if (!req.user) throw Error("token mismatch");
+
       /* Verify that the underlying appeal exists */
       const appeal = await appealsRepository.getByTicketId(ticketId);
       /* If the referenced appeal does not exist, there cannot be an appeal */

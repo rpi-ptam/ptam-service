@@ -19,6 +19,7 @@ import { StatesRouter } from "../controllers/states/StatesRouter";
 import { AppealsRouter } from "../controllers/appeals/AppealsRouter";
 import { AuthenticationRouter } from "../controllers/authentication/AuthenticationRouter";
 import {AuthorizationMiddleware} from "../middleware/AuthorizationMiddleware";
+import {UsersRouter} from "../controllers/users/UsersRouter";
 
 
 const SERVICE_HOST: string = config.get("host");
@@ -88,7 +89,9 @@ export class WebServer implements Runnable {
 
   public addAuthorizedRouters() {
     const appealsRouter = new AppealsRouter(this.repoRegistry, this.cacheRegistry);
+    const usersRouter = new UsersRouter(this.repoRegistry, this.cacheRegistry);
     this.application.use("/appeals", appealsRouter.router);
+    this.application.use("/users", usersRouter.router);
   }
 
   public addAuthorizationMiddleware() {
