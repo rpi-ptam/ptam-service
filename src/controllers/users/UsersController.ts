@@ -1,11 +1,13 @@
-import bind from "bind-decorator";
 import { Response } from "express";
-
 import { User } from "../../definitions/types/User";
 import { AuthorizedRequest } from "../../definitions/AuthorizedRequest";
+import { ADMINISTRATOR, JUDICIAL_BOARD_CHAIR } from "../../contants/Roles";
+
+import bind from "bind-decorator";
+import { Roles } from "../../decorator/RolesDecorator";
+import { RequiredParams } from "../../decorator/RequiredParamsDecorator";
 
 import { Logger } from "../../services/Logger";
-
 import { CacheRegistry } from "../../registries/CacheRegistry";
 import { RepositoryRegistry } from "../../registries/RepositoryRegistry";
 
@@ -39,6 +41,25 @@ export class UsersController {
 
       const friendlyUser = this.getFriendlyUser(user);
       res.status(200).json( { success: true, user: friendlyUser })
+    }
+    catch (error) {
+      res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
+    }
+  }
+
+  @bind
+  @Roles(ADMINISTRATOR, JUDICIAL_BOARD_CHAIR)
+  @RequiredParams("user_id", "role")
+  public async changeRole(req: AuthorizedRequest, res: Response) {
+    const { usersRepository } = this.repoRegistry;
+    const { user_id, role } = req.body;
+
+    try {
+      const roleId = this.cacheRegistry.rolesCache.getByValue(role);
+      if (!roleId) throw Error("role mismatch");
+
+      await usersRepository.updateRole(user_id, roleId);
+      res.status(200).json( { success: true })
     }
     catch (error) {
       res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
