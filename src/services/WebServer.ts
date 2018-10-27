@@ -13,14 +13,16 @@ import { KeyStore } from "../stores/KeyStore";
 import { Runnable } from "../definitions/Runnable";
 import { CacheRegistry } from "../registries/CacheRegistry";
 import { RepositoryRegistry } from "../registries/RepositoryRegistry";
+import { AuthorizationMiddleware } from "../middleware/AuthorizationMiddleware";
 
 import { LotsRouter } from "../controllers/lots/LotsRouter";
+import { UsersRouter } from "../controllers/users/UsersRouter";
 import { StatesRouter } from "../controllers/states/StatesRouter";
 import { AppealsRouter } from "../controllers/appeals/AppealsRouter";
 import { AuthenticationRouter } from "../controllers/authentication/AuthenticationRouter";
-import {AuthorizationMiddleware} from "../middleware/AuthorizationMiddleware";
-import {UsersRouter} from "../controllers/users/UsersRouter";
+import {CorsMiddleware} from "../middleware/CorsMiddleware";
 
+const DEBUG: boolean = config.get("debug");
 
 const SERVICE_HOST: string = config.get("host");
 const SERVICE_SECURE: boolean = config.get("secure");
@@ -31,6 +33,8 @@ const CAS_SECURE: boolean = config.get("cas.secure");
 const JWT_PRIVATE_KEY: string = config.get("auth.privateKey");
 const JWT_PUBLIC_KEY: string = config.get("auth.publicKey");
 const JWT_ALGO: string = config.get("auth.algorithm");
+
+const ALLOWED_CLIENT_DOMAINS: Array<string> = config.get("client.allowedDomains");
 
 /**
  * Express Web-Server Wrapper
@@ -79,19 +83,20 @@ export class WebServer implements Runnable {
   }
 
   public addRouters() {
-    this.addAuthenticationRouter();
-    const lotsRouter = new LotsRouter(this.cacheRegistry);
-    const statesRouter = new StatesRouter(this.cacheRegistry);
-
-    this.application.use("/lots", lotsRouter.router);
-    this.application.use("/states", statesRouter.router);
-  }
-
-  public addAuthorizedRouters() {
     const appealsRouter = new AppealsRouter(this.repoRegistry, this.cacheRegistry);
-    const usersRouter = new UsersRouter(this.repoRegistry, this.cacheRegistry);
     this.application.use("/appeals", appealsRouter.router);
+
+    const usersRouter = new UsersRouter(this.repoRegistry, this.cacheRegistry);
     this.application.use("/users", usersRouter.router);
+
+    const lotsRouter = new LotsRouter(this.cacheRegistry);
+    this.application.use("/lots", lotsRouter.router);
+
+    const statesRouter = new StatesRouter(this.cacheRegistry);
+    this.application.use("/states", statesRouter.router);
+
+    const ticketsRouter = new UsersRouter(this.repoRegistry, this.cacheRegistry);
+    this.application.use("/tickets", ticketsRouter.router);
   }
 
   public addAuthorizationMiddleware() {
@@ -103,6 +108,9 @@ export class WebServer implements Runnable {
     this.application.use(helmet());
     this.application.use(bodyParser.json());
     this.application.use(cookieParser());
+
+    const cors = new CorsMiddleware(DEBUG, ALLOWED_CLIENT_DOMAINS);
+    cors.addOriginProtection(this.application);
   }
 
   public addGlobals() {
@@ -112,10 +120,11 @@ export class WebServer implements Runnable {
 
   public start(): void {
     this.addMiddleware();
-    this.addRouters();
+    /* Authentication Router must be added before Authorization Middleware, otherwise it will be inaccessible */
+    this.addAuthenticationRouter();
 
     this.addAuthorizationMiddleware();
-    this.addAuthorizedRouters();
+    this.addRouters();
 
     this.addGlobals();
 

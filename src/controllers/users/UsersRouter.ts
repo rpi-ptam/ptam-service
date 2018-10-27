@@ -7,7 +7,7 @@ import {RepositoryRegistry} from "../../registries/RepositoryRegistry";
 import {UsersController} from "./UsersController";
 
 /**
- * States Controller Router
+ * Users Controller Router
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class UsersRouter extends ControllerRouter {
