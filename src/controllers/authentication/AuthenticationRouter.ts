@@ -25,6 +25,7 @@ export class AuthenticationRouter extends ControllerRouter {
 
   protected addRoutes(): void {
     this.router.get("/login", this.controller.login);
+    this.router.get("/logout", this.controller.logout);
     this.router.get("/ticket-verify", this.controller.verifyTicket);
   }
 

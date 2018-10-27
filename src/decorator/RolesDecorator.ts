@@ -1,7 +1,8 @@
 "use strict";
 
-import { Request, Response } from "express";
+import { Response } from "express";
 import { CacheRegistry } from "../registries/CacheRegistry";
+import { AuthorizedRequest } from "../definitions/AuthorizedRequest";
 
 /**
  * Roles Middleware Decorator
@@ -14,14 +15,17 @@ import { CacheRegistry } from "../registries/CacheRegistry";
  * @return {Function}
  */
 export function Roles(...roles: Array<string>): Function {
-  void (roles);
-  return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<(req: Request, res: Response) => any>) {
+  return function (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<(req: AuthorizedRequest, res: Response) => any>) {
     void (target);
     void (propertyKey);
     let method = descriptor.value;
-    descriptor.value = async function (req: Request, res: Response) {
-      /* TODO: Verify Actual User Role! */
-      const userRoleId = 3;
+    descriptor.value = async function (req: AuthorizedRequest, res: Response) {
+      if (!req.user) {
+        res.status(401).json({ success: false, error: "UNAUTHORIZED" });
+        return;
+      }
+
+      const userRoleId = req.user.role_id;
 
       const cacheRegistry: CacheRegistry = req.app.get("cacheRegistry");
       const userRoleName = cacheRegistry.rolesCache.getByKey(userRoleId);

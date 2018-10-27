@@ -49,11 +49,11 @@ export class AuthenticationController {
   private async authenticationSuccess(req: Request, res: Response, rcsId: string) {
     void (req);
     const { usersRepository } = this.repoRegistry;
-    console.log("generating token for", rcsId);
     try {
       const user = await usersRepository.getByRcsId(rcsId);
       console.log(user);
       if (user === null) {
+        /* TODO Insert User + Get First/Last Name */
         res.json({ success: false });
         return;
       }
@@ -83,6 +83,12 @@ export class AuthenticationController {
   @bind
   public async login(req: Request, res: Response) {
     await this.centralAuthClient.redirectToCASLogin(req, res);
+  }
+
+  public logout(req: Request, res: Response) {
+    void (req);
+    res.clearCookie("x-access-token");
+    res.redirect("/logout-success");
   }
 
 }

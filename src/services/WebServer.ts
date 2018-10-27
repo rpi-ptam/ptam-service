@@ -1,9 +1,15 @@
 "use strict";
 
 import http from "http";
+import helmet from "helmet";
 import config from "config";
 import express from "express";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
+import { ClientConfig } from "logical-cas-client";
+
+import { KeyStore } from "../stores/KeyStore";
 import { Runnable } from "../definitions/Runnable";
 import { CacheRegistry } from "../registries/CacheRegistry";
 import { RepositoryRegistry } from "../registries/RepositoryRegistry";
@@ -11,9 +17,9 @@ import { RepositoryRegistry } from "../registries/RepositoryRegistry";
 import { LotsRouter } from "../controllers/lots/LotsRouter";
 import { StatesRouter } from "../controllers/states/StatesRouter";
 import { AppealsRouter } from "../controllers/appeals/AppealsRouter";
-import {ClientConfig} from "logical-cas-client";
-import {AuthenticationRouter} from "../controllers/authentication/AuthenticationRouter";
-import {KeyStore} from "../stores/KeyStore";
+import { AuthenticationRouter } from "../controllers/authentication/AuthenticationRouter";
+import {AuthorizationMiddleware} from "../middleware/AuthorizationMiddleware";
+
 
 const SERVICE_HOST: string = config.get("host");
 const SERVICE_SECURE: boolean = config.get("secure");
@@ -73,19 +79,43 @@ export class WebServer implements Runnable {
 
   public addRouters() {
     this.addAuthenticationRouter();
-    const appealsRouter = new AppealsRouter(this.repoRegistry, this.cacheRegistry);
     const lotsRouter = new LotsRouter(this.cacheRegistry);
     const statesRouter = new StatesRouter(this.cacheRegistry);
 
-    this.application.use("/appeals", appealsRouter.router);
     this.application.use("/lots", lotsRouter.router);
     this.application.use("/states", statesRouter.router);
   }
 
-  public start(): void {
-    this.addRouters();
+  public addAuthorizedRouters() {
+    const appealsRouter = new AppealsRouter(this.repoRegistry, this.cacheRegistry);
+    this.application.use("/appeals", appealsRouter.router);
+  }
+
+  public addAuthorizationMiddleware() {
+    const authMiddleware = new AuthorizationMiddleware(this.keyStore);
+    this.application.use(authMiddleware.verifyToken);
+  }
+
+  public addMiddleware() {
+    this.application.use(helmet());
+    this.application.use(bodyParser.json());
+    this.application.use(cookieParser());
+  }
+
+  public addGlobals() {
     this.application.set("cacheRegistry", this.cacheRegistry);
     this.application.set("keyStore", this.keyStore);
+  }
+
+  public start(): void {
+    this.addMiddleware();
+    this.addRouters();
+
+    this.addAuthorizationMiddleware();
+    this.addAuthorizedRouters();
+
+    this.addGlobals();
+
     this.httpInstance = this.application.listen(this.port);
   }
 

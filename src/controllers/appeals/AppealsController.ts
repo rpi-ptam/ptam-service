@@ -1,13 +1,14 @@
 "use strict";
 
 import bind from "bind-decorator";
-import { Request, Response } from "express";
+import { Response } from "express";
 
 import { Logger } from "../../services/Logger";
 import { CacheRegistry } from "../../registries/CacheRegistry";
 import { RepositoryRegistry } from "../../registries/RepositoryRegistry";
 
 import { Appeal } from "../../definitions/types/Appeal";
+import { AuthorizedRequest } from "../../definitions/AuthorizedRequest";
 
 import { Roles } from "../../decorator/RolesDecorator";
 import { RequiredParams } from "../../decorator/RequiredParamsDecorator";
@@ -45,7 +46,7 @@ export class AppealsController {
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR, PARKING_OFFICE_OFFICIAL)
   @RequiredParams("ticketId")
-  public async getAppeal(req: Request, res: Response): Promise<void> {
+  public async getAppeal(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
     const { ticketId } = req.query;
 
@@ -70,7 +71,7 @@ export class AppealsController {
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR, PARKING_OFFICE_OFFICIAL)
   @RequiredParams("start", "count")
-  public async getAppealsBulk(req: Request, res: Response): Promise<void> {
+  public async getAppealsBulk(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
     const { start, count } = req.query;
     try {
@@ -103,7 +104,7 @@ export class AppealsController {
   @bind
   @Roles(STUDENT)
   @RequiredParams("ticket_id", "justification")
-  public async createAppeal(req: Request, res: Response): Promise<void> {
+  public async createAppeal(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository, ticketsRepository } = this.repoRegistry;
     const { ticketId, justification } = req.body;
 
@@ -148,7 +149,7 @@ export class AppealsController {
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR)
   @RequiredParams("ticket_id", "verdict_id")
-  public async createVerdict(req: Request, res: Response): Promise<void> {
+  public async createVerdict(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
     const { ticketId, verdictId, verdictComment } = req.body;
 
