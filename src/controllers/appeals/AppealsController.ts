@@ -117,12 +117,10 @@ export class AppealsController {
         return;
       }
 
-      /*
-      if (ticket.violator_id !== userId) {
+      if (ticket.violator_id !== req.user.id) {
         res.status(401).json({ success: false, error: "UNAUTHORIZED" });
         return;
       }
-      */
 
       /* Prepare the appeal literal */
       const appeal: Appeal = { ticket_id: ticketId, justification: justification, appealed_at: "NOW()" };
@@ -162,8 +160,7 @@ export class AppealsController {
         return;
       }
 
-      /* TODO: Use User-Identifier */
-      await appealsRepository.updateVerdict(ticketId, verdictId, verdictComment, 0);
+      await appealsRepository.updateVerdict(ticketId, verdictId, verdictComment, req.user.id);
     }
     catch (error) {
       Logger.error(error);
