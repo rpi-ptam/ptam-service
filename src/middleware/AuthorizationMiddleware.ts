@@ -16,7 +16,7 @@ export class AuthorizationMiddleware {
 
   @bind
   public async verifyToken(req: AuthorizedRequest, res: Response, next: NextFunction): Promise<void> {
-    if (!req.cookies.hasOwnProperty("x-access-token")) {
+    if (!req.cookies || !Object.keys(req.cookies).includes("x-access-token")) {
       res.status(401).json({ success: false, error: "UNAUTHORIZED" });
       return;
     }

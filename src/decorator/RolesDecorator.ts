@@ -20,6 +20,11 @@ export function Roles(...roles: Array<string>): Function {
     void (propertyKey);
     let method = descriptor.value;
     descriptor.value = async function (req: AuthorizedRequest, res: Response) {
+      if (!req.user) {
+        res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
+        return;
+      }
+
       const userRoleId = req.user.role_id;
 
       const cacheRegistry: CacheRegistry = req.app.get("cacheRegistry");
