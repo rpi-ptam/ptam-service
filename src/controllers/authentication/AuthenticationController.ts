@@ -51,14 +51,16 @@ export class AuthenticationController {
     const { usersRepository } = this.repoRegistry;
     try {
       const user = await usersRepository.getByRcsId(rcsId);
-      console.log(user);
       if (user === null) {
         /* TODO Insert User + Get First/Last Name */
         res.json({ success: false });
         return;
       }
       const jwtConfig = { expiresIn: `${TOKEN_EXPIRATION_HOURS}h`, algorithm: this.keyStore.algorithm };
-      const token = await jwt.sign({ user }, this.keyStore.jwtPrivateKey, jwtConfig);
+
+      const tokenUser = { id: user.id, role_id: user.role_id };
+      const token = await jwt.sign({ user: tokenUser }, this.keyStore.jwtPrivateKey, jwtConfig);
+
       res.cookie("x-access-token", token, { httpOnly: true, secure: SERVICE_SECURE });
       res.redirect(CLIENT_FRIENDLY_URL + "/login-success");
     }
