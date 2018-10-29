@@ -20,7 +20,7 @@ export class ViolationTypesRepository extends Repository {
     const violationTypesMap = new Map<number,string>();
     for (let i = 0; i < violationTypesResult.rowCount; i++) {
       const violationTypeLiteral: any = violationTypesResult.rows[i];
-      violationTypesMap.set(violationTypeLiteral.id, violationTypeLiteral.abbreviation);
+      violationTypesMap.set(violationTypeLiteral.id, violationTypeLiteral.type);
     }
 
     return violationTypesMap;
