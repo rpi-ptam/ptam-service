@@ -12,6 +12,7 @@ import { StatesRepository } from "../repositories/StatesRepository";
 import { TicketsRepository } from "../repositories/TicketsRepository";
 import { UsersRepository } from "../repositories/UsersRepository";
 import { VerdictsRepository } from "../repositories/VerdictsRepository";
+import { ViolationTypesRepository } from "../repositories/ViolationTypesRepository";
 
 const DATABASE_HOST: string = config.get("database.host");
 const DATABASE_PORT: number = config.get("database.port");
@@ -34,6 +35,7 @@ export class RepositoryRegistry implements Runnable {
   public readonly ticketsRepository: TicketsRepository;
   public readonly usersRepository: UsersRepository;
   public readonly verdictsRepository: VerdictsRepository;
+  public readonly violationTypesRepository: ViolationTypesRepository;
 
   constructor() {
     this.postgresDriver = new PostgresDriver(DATABASE_HOST, DATABASE_PORT, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
@@ -45,6 +47,7 @@ export class RepositoryRegistry implements Runnable {
     this.ticketsRepository = new TicketsRepository(this.postgresDriver);
     this.usersRepository = new UsersRepository(this.postgresDriver);
     this.verdictsRepository = new VerdictsRepository(this.postgresDriver);
+    this.violationTypesRepository = new ViolationTypesRepository(this.postgresDriver);
   }
 
   public async start(): Promise<void> {

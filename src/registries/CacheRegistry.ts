@@ -7,6 +7,7 @@ import { LotsCache } from "../caches/LotsCache";
 import { RolesCache } from "../caches/RolesCache";
 import { StatesCache } from "../caches/StatesCache";
 import { VerdictsCache } from "../caches/VerdictsCache";
+import { ViolationTypesCache } from "../caches/ViolationTypesCache";
 
 /**
  * Cache Registry (mappings)
@@ -18,12 +19,14 @@ export class CacheRegistry implements Runnable {
   public readonly rolesCache: RolesCache;
   public readonly statesCache: StatesCache;
   public readonly verdictsCache: VerdictsCache;
+  public readonly violationTypesCache: ViolationTypesCache;
 
   constructor(repoRegistry: RepositoryRegistry) {
     this.lotsCache = new LotsCache(repoRegistry);
     this.rolesCache = new RolesCache(repoRegistry);
     this.statesCache = new StatesCache(repoRegistry);
     this.verdictsCache = new VerdictsCache(repoRegistry);
+    this.violationTypesCache = new ViolationTypesCache(repoRegistry);
   }
 
   async start(): Promise<void> {
