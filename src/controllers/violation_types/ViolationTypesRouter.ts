@@ -6,8 +6,8 @@ import { ViolationTypesController } from "./ViolationTypesController";
 import { ControllerRouter } from "../../definitions/ControllerRouter";
 
 /**
- * States Controller Router
- * @author Aaron J. Shapiro <shapia4@rpi.edu>
+ * Violation Types Controller Router
+ * @author William Zawilinski <zawilw@rpi.edu>
  */
 export class ViolationTypesRouter extends ControllerRouter {
 

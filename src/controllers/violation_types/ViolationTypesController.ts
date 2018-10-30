@@ -6,6 +6,10 @@ import { Request, Response } from "express";
 import { Logger } from "../../services/Logger";
 import { CacheRegistry } from "../../registries/CacheRegistry";
 
+/**
+ * Violation Types Controller
+ * @author William Zawilinski <zawilw@rpi.edu>
+ */
 export class ViolationTypesController {
 
   private readonly cacheRegistry: CacheRegistry;
