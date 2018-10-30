@@ -21,6 +21,7 @@ import { StatesRouter } from "../controllers/states/StatesRouter";
 import { AppealsRouter } from "../controllers/appeals/AppealsRouter";
 import { AuthenticationRouter } from "../controllers/authentication/AuthenticationRouter";
 import {CorsMiddleware} from "../middleware/CorsMiddleware";
+import {ViolationTypesRouter} from "../controllers/violation_types/ViolationTypesRouter";
 
 const DEBUG: boolean = config.get("debug");
 
@@ -94,6 +95,9 @@ export class WebServer implements Runnable {
 
     const statesRouter = new StatesRouter(this.cacheRegistry);
     this.application.use("/states", statesRouter.router);
+
+    const violationTypesRouter = new ViolationTypesRouter(this.cacheRegistry);
+    this.application.use("/violation-types", violationTypesRouter.router);
 
     const ticketsRouter = new UsersRouter(this.repoRegistry, this.cacheRegistry);
     this.application.use("/tickets", ticketsRouter.router);

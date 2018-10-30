@@ -34,6 +34,7 @@ export class CacheRegistry implements Runnable {
     await this.rolesCache.fill();
     await this.statesCache.fill();
     await this.verdictsCache.fill();
+    await this.violationTypesCache.fill();
   }
 
   stop(): void {
@@ -41,6 +42,7 @@ export class CacheRegistry implements Runnable {
     this.rolesCache.flush();
     this.statesCache.flush();
     this.verdictsCache.flush();
+    this.violationTypesCache.flush();
   }
 
 }
