@@ -91,6 +91,7 @@ export class AppealsRepository extends Repository {
       justification: row.a_justification,
       appealed_at: row.a_appealed_at,
       verdict_id: row.a_verdict_id,
+      verdict: null,
       verdict_comment: row.a_verdict_comment,
       reviewed_by: row.a_reviewed_by,
       reviewed_at: row.a_reviewed_at

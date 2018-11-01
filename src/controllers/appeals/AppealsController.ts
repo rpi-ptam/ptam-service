@@ -19,7 +19,7 @@ import {
   JUDICIAL_BOARD_MEMBER,
   PARKING_OFFICE_OFFICIAL
 } from "../../contants/Roles";
-import {AppealTicketPair} from "../../definitions/types/AppealTicketPair";
+import {AppealProcessor} from "../utilities/AppealProcessor";
 
 /**
  * Appeals Controller
@@ -29,9 +29,13 @@ export class AppealsController {
   private readonly repoRegistry: RepositoryRegistry;
   private readonly cacheRegistry: CacheRegistry;
 
+  private readonly appealProcessor: AppealProcessor;
+
   constructor(repoRegistry: RepositoryRegistry, cacheRegistry: CacheRegistry) {
     this.repoRegistry = repoRegistry;
     this.cacheRegistry = cacheRegistry;
+
+    this.appealProcessor = new AppealProcessor(cacheRegistry);
   }
 
   /**
@@ -84,7 +88,7 @@ export class AppealsController {
       }
       /* Otherwise be agnostic and get all */
       const appealTicketPairs = await appealsRepository.getAppealsBulk(start, count);
-      const processedAppealTicketPairs = this.processAppealTicketPairs(appealTicketPairs);
+      const processedAppealTicketPairs = this.appealProcessor.processAppealTicketPairs(appealTicketPairs);
       res.status(200).json({ success: true, appeals: processedAppealTicketPairs });
     }
     catch (error) {
@@ -93,19 +97,7 @@ export class AppealsController {
     }
   }
 
-  public processAppealTicketPairs(appealTicketPairs: Array<AppealTicketPair>): Array<AppealTicketPair> {
-    const { verdictsCache } = this.cacheRegistry;
-    return appealTicketPairs.map(atp => {
-      return {
-        ...atp,
-        appeal: {
-          ...atp.appeal,
-          verdict: atp.appeal.verdict_id ? verdictsCache.getByKey(atp.appeal.verdict_id) : null,
-          verdict_id: null
-        }
-      }
-    });
-  }
+
 
   /**
    * Insert an appeal for a given ticket.
