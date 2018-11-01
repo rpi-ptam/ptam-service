@@ -62,7 +62,7 @@ export class AuthenticationController {
       const token = await jwt.sign({ user: tokenUser }, this.keyStore.jwtPrivateKey, jwtConfig);
 
       res.cookie("x-access-token", token, { httpOnly: true, secure: SERVICE_SECURE });
-      res.redirect(CLIENT_FRIENDLY_URL + "/login-success");
+      res.redirect(CLIENT_FRIENDLY_URL+ "/login/success");
     }
     catch (error) {
       console.log(error);
@@ -73,8 +73,8 @@ export class AuthenticationController {
   @bind
   private async authenticationFailure(req: Request, res: Response, error: any) {
     void (req);
-    res.json({ success: false });
-    console.error(error);
+    void (error);
+    res.redirect(CLIENT_FRIENDLY_URL + "/login/failure");
   }
 
   @bind
@@ -90,7 +90,7 @@ export class AuthenticationController {
   public logout(req: Request, res: Response) {
     void (req);
     res.clearCookie("x-access-token");
-    res.redirect(CLIENT_FRIENDLY_URL + "/logout-success");
+    res.redirect(CLIENT_FRIENDLY_URL + "/logout/success");
   }
 
 }

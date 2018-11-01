@@ -27,7 +27,8 @@ export class CorsMiddleware {
         else {
           next(new Error("CORS Policy Violation"))
         }
-      }
+      },
+      credentials: true
     }
   }
 

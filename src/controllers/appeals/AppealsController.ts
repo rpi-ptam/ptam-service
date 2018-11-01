@@ -19,6 +19,7 @@ import {
   JUDICIAL_BOARD_MEMBER,
   PARKING_OFFICE_OFFICIAL
 } from "../../contants/Roles";
+import {AppealTicketPair} from "../../definitions/types/AppealTicketPair";
 
 /**
  * Appeals Controller
@@ -31,7 +32,6 @@ export class AppealsController {
   constructor(repoRegistry: RepositoryRegistry, cacheRegistry: CacheRegistry) {
     this.repoRegistry = repoRegistry;
     this.cacheRegistry = cacheRegistry;
-    void (this.cacheRegistry);
   }
 
   /**
@@ -77,19 +77,34 @@ export class AppealsController {
     try {
       /* The request specifies whether the appeals should be decided, filter accordingly */
       if (req.query.hasOwnProperty("decided")) {
-        const appealTicketPairs = req.query.decided === 'true' ? await appealsRepository.getDecidedAppealsBulk(start, count) :
-          await appealsRepository.getUndecidedAppealsBulk(start, count);
+        const appealTicketPairs = req.query.decided === 'true' ?
+          await appealsRepository.getDecidedAppealsBulk(start, count) : await appealsRepository.getUndecidedAppealsBulk(start, count);
         res.status(200).json({ success: true, appeals: appealTicketPairs });
         return;
       }
       /* Otherwise be agnostic and get all */
       const appealTicketPairs = await appealsRepository.getAppealsBulk(start, count);
-      res.status(200).json({ success: true, appeals: appealTicketPairs });
+      const processedAppealTicketPairs = this.processAppealTicketPairs(appealTicketPairs);
+      res.status(200).json({ success: true, appeals: processedAppealTicketPairs });
     }
     catch (error) {
       Logger.error(error);
       res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
     }
+  }
+
+  public processAppealTicketPairs(appealTicketPairs: Array<AppealTicketPair>): Array<AppealTicketPair> {
+    const { verdictsCache } = this.cacheRegistry;
+    return appealTicketPairs.map(atp => {
+      return {
+        ...atp,
+        appeal: {
+          ...atp.appeal,
+          verdict: atp.appeal.verdict_id ? verdictsCache.getByKey(atp.appeal.verdict_id) : null,
+          verdict_id: null
+        }
+      }
+    });
   }
 
   /**
@@ -125,7 +140,7 @@ export class AppealsController {
       }
 
       /* Prepare the appeal literal */
-      const appeal: Appeal = { ticket_id: ticketId, justification: justification, appealed_at: "NOW()" };
+      const appeal: Appeal = { ticket_id: ticketId, justification: justification, appealed_at: "NOW()", verdict: null };
       await appealsRepository.insertAppeal(appeal);
 
       /* Respond gracefully */
@@ -136,6 +151,21 @@ export class AppealsController {
       res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
     }
 
+  }
+
+  @bind
+  @Roles(JUDICIAL_BOARD_CHAIR, JUDICIAL_BOARD_MEMBER, PARKING_OFFICE_OFFICIAL)
+  public async getStatistics(req: AuthorizedRequest, res: Response): Promise<void> {
+    void (req);
+    const { appealsRepository } = this.repoRegistry;
+    try {
+      const appealStatistics = await appealsRepository.getStatistics();
+      res.status(200).json({ success: true, statistics: appealStatistics });
+    }
+    catch (error) {
+      Logger.error(error);
+      res.status(500).json({ success: false, error: "INTERNAL_ERROR" });
+    }
   }
 
   /**

@@ -23,6 +23,7 @@ export class AppealsRouter extends ControllerRouter {
 
   protected addRoutes(): void {
     this.router.get("/get", this.controller.getAppeal);
+    this.router.get("/statistics/get", this.controller.getStatistics);
     this.router.get("/bulk/get", this.controller.getAppealsBulk);
     this.router.post("/create", this.controller.createAppeal);
   }

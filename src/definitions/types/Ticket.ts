@@ -8,5 +8,6 @@ export type Ticket = {
   tag: string,
   plate_state_id: number,
   amount: number,
-  issued_at: string
+  issued_at: string,
+  violation_type_id: number
 }

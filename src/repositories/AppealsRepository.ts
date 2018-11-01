@@ -6,6 +6,7 @@ import { Appeal } from "../definitions/types/Appeal";
 import { AppealTicketPair } from "../definitions/types/AppealTicketPair";
 import { QueryResult } from "pg";
 import {Ticket} from "../definitions/types/Ticket";
+import {AppealStatistics} from "../definitions/types/AppealStatistics";
 
 /**
  * Appeals Repository
@@ -62,10 +63,25 @@ export class AppealsRepository extends Repository {
   private getAppealsBulkSelectBase(): string {
     return "SELECT a.id as a_id, a.ticket_id as a_ticket_id, a.justification as a_justification, " +
       "a.appealed_at as a_appealed_at, a.verdict_id as a_verdict_id, a.verdict_comment as a_verdict_comment, " +
-      "a.reviewed_by as a_reviewed_by, a.reviewed_at as a_reviewed_at, t.id as t_id, t.violator_id as t_violator_id, " +
+      "a.reviewed_by as a_reviewed_by, a.reviewed_at as a_reviewed_at, t.id as t_id, t.violator_id as t_violator_id, t.violation_type_id as t_violation_type_id, " +
       "t.external_id as t_external_id, t.lot_id as t_lot_id, t.make as t_make, t.model as t_model, t.tag as t_tag, " +
       "t.plate_state_id as t_plate_state_id, t.amount as t_amount, t.issued_at as t_issued_at " +
       "FROM appeals a INNER JOIN tickets t ON a.ticket_id = t.id ";
+  }
+
+  public async getStatistics(): Promise<AppealStatistics> {
+    const statement = "SELECT count(a.id) FILTER (WHERE a.reviewed_by IS NULL) as open_appeals, " +
+      "count(a.id) FILTER (WHERE EXTRACT(DAYS FROM age(NOW(), a.appealed_at)) < 7) as appeals_this_week, " +
+      "count(a.id) FILTER (WHERE EXTRACT(MONTHS FROM age(NOW(), a.appealed_at)) < 1) as appeals_this_month, " +
+      "count(a.id) FILTER (WHERE EXTRACT(YEARS FROM age(NOW(), a.appealed_at)) < 1) as appeals_this_year, " +
+      "count(a.id) FILTER (WHERE EXTRACT(DAYS FROM age(NOW(), a.reviewed_at)) < 7) as appeals_reviewed_this_week, " +
+      "count(a.id) FILTER (WHERE EXTRACT(MONTHS FROM age(NOW(), a.reviewed_at)) < 1) as appeals_reviewed_this_month, " +
+      "count(a.id) FILTER (WHERE EXTRACT(YEARS FROM age(NOW(), a.reviewed_at)) < 1) as appeals_reviewed_this_year, " +
+      "count(a.id) AS total_appeals " +
+      "FROM appeals a " +
+      "INNER JOIN tickets t on a.ticket_id = t.id";
+    const result = await this.postgresDriver.query(statement);
+    return result.rows[0];
   }
 
   private normalizeBulkAppeal(row: any): Appeal {
@@ -92,7 +108,8 @@ export class AppealsRepository extends Repository {
       tag: row.t_tag,
       plate_state_id: row.t_plate_state_id,
       amount: row.t_amount,
-      issued_at: row._t_isssued_at
+      issued_at: row.t_issued_at,
+      violation_type_id: row.t_violation_type_id
     }
   }
 
