@@ -49,22 +49,23 @@ export class AppealsController {
    */
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR, PARKING_OFFICE_OFFICIAL)
-  @RequiredParams("ticket_id")
+  @RequiredParams("appeal_id")
   public async getAppeal(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
-    const { ticket_id } = req.query;
+    const { appeal_id } = req.query;
 
     try {
-      /* Try to get the appeal by the ticket identifier */
-      const appeal = await appealsRepository.getByTicketId(ticket_id);
+      /* Try to get the appealTicketPair by the ticket identifier */
+      const appealTicketPair = await appealsRepository.getWithTicketById(appeal_id);
 
-      /* If there is no appeal, fail safely */
-      if (appeal === null) {
+      /* If there is no appealTicketPair, fail safely */
+      if (appealTicketPair === null) {
         res.status(200).json({success: false, error: "APPEAL_NOT_FOUND"});
         return;
       }
-      /* Found appeal successfully, respond gracefully */
-      res.status(200).json({ success: true, appeal });
+      const processedAppealTicketPair = this.appealProcessor.processAppealTicketPair(appealTicketPair);
+      /* Found appealTicketPair successfully, respond gracefully */
+      res.status(200).json({ success: true, appeal_ticket_pair: processedAppealTicketPair });
     }
     catch (error) {
       Logger.error(error);
@@ -113,13 +114,14 @@ export class AppealsController {
   @RequiredParams("ticket_id", "justification")
   public async createAppeal(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository, ticketsRepository } = this.repoRegistry;
-    const { ticketId, justification } = req.body;
+    const { ticket_id, justification } = req.body;
 
     try {
       if (!req.user) throw Error("token mismatch");
 
       /* Verify that the underlying ticket exists */
-      const ticket = await ticketsRepository.getById(ticketId);
+      const ticket = await ticketsRepository.getById(ticket_id);
+
       /* If the referenced ticket does not exist, there cannot be an appeal */
       if (ticket === null) {
         res.status(400).json({ success: false, error: "MALFORMED_REQUEST" });
@@ -132,7 +134,7 @@ export class AppealsController {
       }
 
       /* Prepare the appeal literal */
-      const appeal: Appeal = { ticket_id: ticketId, justification: justification, appealed_at: "NOW()", verdict: null };
+      const appeal: Appeal = { ticket_id, justification: justification, appealed_at: "NOW()", verdict: null };
       await appealsRepository.insertAppeal(appeal);
 
       /* Respond gracefully */

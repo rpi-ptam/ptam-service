@@ -28,11 +28,11 @@ export class TicketsController {
 
   @bind
   @Roles(STUDENT)
-  @RequiredParams("external_id", "lot", "make", "model", "tag", "plate_state", "amount", "issued_at")
+  @RequiredParams("external_id", "lot", "make", "model", "tag", "plate_state", "amount", "issued_at", "violation")
   public async createTicket(req: AuthorizedRequest, res: Response): Promise<void> {
     const { ticketsRepository } = this.repoRegistry;
-    const { statesCache, lotsCache } = this.cacheRegistry;
-    const { external_id, lot, make, model, tag, plate_state, amount, issued_at } = req.body;
+    const { statesCache, lotsCache, violationTypesCache } = this.cacheRegistry;
+    const { external_id, lot, make, model, tag, plate_state, amount, issued_at, violation } = req.body;
 
     try {
       if (!req.user) throw Error("user token mistmatch");
@@ -49,6 +49,12 @@ export class TicketsController {
         return;
       }
 
+      const violationId = violationTypesCache.getByValue(violation);
+      if (!violationId) {
+        res.status(400).json({ success: false, error: "VIOLATION_INVALID" });
+        return;
+      }
+
       const existingTicket = await ticketsRepository.getByExternalId(external_id);
       if (existingTicket !== null) {
         res.status(200).json({ success: false, error: "TICKET_ALREADY_FILED" });
@@ -56,9 +62,10 @@ export class TicketsController {
       }
 
       const ticket: Ticket = { violator_id: req.user.id, external_id: external_id,  lot_id: lotId, plate_state_id: stateId,
-        make: make, model: model, tag: tag, amount: amount, issued_at: issued_at };
+        make: make, model: model, tag: tag, amount: amount, issued_at: issued_at, violation_type_id: violationId };
 
-      await ticketsRepository.insertTicket(ticket);
+      const ticketId = await ticketsRepository.insertTicket(ticket);
+      res.status(200).json({ success: true, ticket_id: ticketId });
     }
     catch (error) {
       Logger.error(error);

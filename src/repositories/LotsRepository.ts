@@ -14,7 +14,7 @@ export class LotsRepository extends Repository {
   }
 
   public async getAllLots(): Promise<Map<number,string>> {
-    const statement = "SELECT id, name FROM lots";
+    const statement = "SELECT id, name FROM lots ORDER BY name ASC";
     const lotsResult = await this.postgresDriver.query(statement);
 
     const lotsMap = new Map<number,string>();

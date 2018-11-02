@@ -23,6 +23,7 @@ import { AuthenticationRouter } from "../controllers/authentication/Authenticati
 import {CorsMiddleware} from "../middleware/CorsMiddleware";
 import {ViolationTypesRouter} from "../controllers/violation_types/ViolationTypesRouter";
 import {VerdictsRouter} from "../controllers/verdicts/VerdictsRouter";
+import {TicketsRouter} from "../controllers/tickets/TicketsRouter";
 
 const DEBUG: boolean = config.get("debug");
 
@@ -103,7 +104,7 @@ export class WebServer implements Runnable {
     const verdictsRouter = new VerdictsRouter(this.cacheRegistry);
     this.application.use("/verdicts", verdictsRouter.router);
 
-    const ticketsRouter = new UsersRouter(this.repoRegistry, this.cacheRegistry);
+    const ticketsRouter = new TicketsRouter(this.repoRegistry, this.cacheRegistry);
     this.application.use("/tickets", ticketsRouter.router);
   }
 
