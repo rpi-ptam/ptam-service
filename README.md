@@ -42,6 +42,8 @@ The configuration system utilizes the `NODE_ENV` environment variable to determi
 
  1. Copy the contents `default.json` from the `config` folder and create a `development.json` file in the same directory.
  2. Fill out the configuration file as necessary, i.e. configure the database.
+ 
+ Once the configuration is set up, run "npm run dev" from the root directory of the project.
 
 ----------
 
