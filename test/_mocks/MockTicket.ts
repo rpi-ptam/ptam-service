@@ -1,15 +1,21 @@
 import { Chance } from "chance";
-import { Appeal } from "../../src/definitions/types/Appeal";
+import { Ticket } from "../../src/definitions/types/Ticket";
 
-export class MockAppeal {
+export class MockTicket {
 
-  public static getRandomAppeal(ticketId: number): Appeal {
+  public static getRandomTicket(userId: number): Ticket {
     const chance = new Chance();
     return {
-      ticket_id: ticketId,
-      justification: chance.sentence(),
-      appealed_at: "NOW()",
-      verdict: null
+      violator_id: userId,
+      external_id: `${chance.integer({ min: 100000, max: 999999 })}`,
+      lot_id: 1,
+      make: chance.word(),
+      model: chance.word(),
+      tag: chance.string({ length: 8 }),
+      plate_state_id: 1,
+      amount: chance.integer({ min: 10, max: 100}),
+      issued_at: "NOW()",
+      violation_type_id: 1
     }
   }
 
