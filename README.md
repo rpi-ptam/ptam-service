@@ -17,9 +17,6 @@ Development Environment
 
 The latest version of [Node.js](https://nodejs.org/en/) > _(v8.0.0)_ should be installed on your system. If you are using Windows and are having a hard time installing the latest version, please consider using [Node Version Manager](https://github.com/creationix/nvm).
 
-#### Dependency Installation
-Install PostgreSQL version 10. Installiation instructions are here: [PostgreSQL Downloads](https://www.postgresql.org/download/)
-Once all system-dependencies are installed, run`npm install`
 
 #### Environment Variables
 The configuration system utilizes the `NODE_ENV` environment variable to determine which configuration file to look for. _(The value should be 'development')_
