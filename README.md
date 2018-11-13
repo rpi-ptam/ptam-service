@@ -1,4 +1,4 @@
-## Rensselaer Parking-Ticket Appeal Management System ##
+## Rensselaer Parking-Ticket Appeal Management System - Service ##
 -------------
 
 This web-application will be utilized by the Rensselaer community to file and review parking ticket appeals. The application's dependency management in handled in NPM.
