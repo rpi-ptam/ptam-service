@@ -65,6 +65,11 @@ export class AppealsRepository extends Repository {
     return this.normalizeBulkResult(result);
   }
 
+  public async removeById(id: number): Promise<void> {
+    const statement = "DELETE FROM appeals WHERE id = $1";
+    await this.postgresDriver.query(statement, [id]);
+  }
+
   private getAppealTicketPairBaseQuery(): string {
     return "SELECT a.id as a_id, a.ticket_id as a_ticket_id, a.justification as a_justification, " +
       "a.appealed_at as a_appealed_at, a.verdict_id as a_verdict_id, a.verdict_comment as a_verdict_comment, " +

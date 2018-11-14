@@ -33,4 +33,9 @@ export class TicketsRepository extends Repository {
     return result.rows[0];
   }
 
+  public async removeById(id: number): Promise<void> {
+    const statement = "DELETE FROM tickets WHERE id = $1";
+    await this.postgresDriver.query(statement, [id]);
+  }
+
 }
