@@ -2,7 +2,8 @@
 <p align="center">
   <a href="https://travis-ci.org/rpi-ptam/ptam-service"><img src="https://travis-ci.org/rpi-ptam/ptam-service.svg?branch=master" alt="TravisCI Build Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-  <a href="https://coveralls.io/github/rpi-ptam/ptam-service"><img src="https://coveralls.io/repos/github/rpi-ptam/ptam-service/badge.svg" alt="Coverage Status"/></a>
+  <a href="https://codeclimate.com/github/rpi-ptam/ptam-service/maintainability"><img src="https://api.codeclimate.com/v1/badges/ff38ae6a8f36866d5eae/maintainability"/></a>
+  <a href="https://codeclimate.com/github/rpi-ptam/ptam-service/test_coverage"><img src="https://api.codeclimate.com/v1/badges/ff38ae6a8f36866d5eae/test_coverage" /></a>
 </p>
 
 This web-application will be utilized by the Rensselaer community to file and review parking ticket appeals. The application's dependency management in handled in NPM.
