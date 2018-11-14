@@ -1,0 +1,29 @@
+{
+  "host": "localhost",
+  "port": 8080,
+  "secure": false,
+  "debug": true,
+  "client": {
+    "allowedDomains": [],
+    "friendlyUrl": ""
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres",
+    "password": "",
+    "database": "ptam_ci_testing"
+  },
+  "cas": {
+    "host": "",
+    "secure": true,
+    "version": "2.0"
+  },
+  "auth": {
+    "useEnv": true,
+    "privateKey": "",
+    "publicKey": "",
+    "algorithm": "",
+    "tokenDurationHours": 24
+  }
+}

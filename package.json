@@ -19,7 +19,9 @@
       "tsx",
       "js",
       "json"
-    ]
+    ],
+    "collectCoverage": true,
+    "coverageReporters": ["lcov"]
   },
   "repository": {
     "type": "git",

@@ -1,17 +1,12 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Lots Repository
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class LotsRepository extends Repository {
-
-  constructor(databaseDriver: PostgresDriver) {
-    super(databaseDriver);
-  }
 
   public async getAllLots(): Promise<Map<number,string>> {
     const statement = "SELECT id, name FROM lots ORDER BY name ASC";

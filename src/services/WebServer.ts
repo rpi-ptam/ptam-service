@@ -33,10 +33,6 @@ const SERVICE_SECURE: boolean = config.get("secure");
 const CAS_HOST: string = config.get("cas.host");
 const CAS_SECURE: boolean = config.get("cas.secure");
 
-const JWT_PRIVATE_KEY: string = config.get("auth.privateKey");
-const JWT_PUBLIC_KEY: string = config.get("auth.publicKey");
-const JWT_ALGO: string = config.get("auth.algorithm");
-
 const ALLOWED_CLIENT_DOMAINS: Array<string> = config.get("client.allowedDomains");
 
 /**
@@ -49,17 +45,16 @@ export class WebServer implements Runnable {
   private readonly cacheRegistry: CacheRegistry;
   private readonly repoRegistry: RepositoryRegistry;
 
-  private readonly keyStore: KeyStore;
+  private readonly authKeyStore: KeyStore;
 
   private readonly application: express.Application;
   private httpInstance: http.Server | undefined;
 
-  constructor(port: number, repoRegistry: RepositoryRegistry, cacheRegistry: CacheRegistry) {
+  constructor(port: number, repoRegistry: RepositoryRegistry, cacheRegistry: CacheRegistry, authKeyStore: KeyStore) {
     this.port = port;
     this.repoRegistry = repoRegistry;
     this.cacheRegistry = cacheRegistry;
-
-    this.keyStore = new KeyStore(JWT_PUBLIC_KEY, JWT_PRIVATE_KEY, JWT_ALGO);
+    this.authKeyStore = authKeyStore;
 
     this.application = express();
   }
@@ -81,7 +76,7 @@ export class WebServer implements Runnable {
         version: "2.0"
       }
     };
-    const authRouter = new AuthenticationRouter(this.repoRegistry, this.cacheRegistry, this.keyStore, casConfig);
+    const authRouter = new AuthenticationRouter(this.repoRegistry, this.cacheRegistry, this.authKeyStore, casConfig);
     this.application.use("/authentication", authRouter.router);
   }
 
@@ -109,7 +104,7 @@ export class WebServer implements Runnable {
   }
 
   public addAuthorizationMiddleware() {
-    const authMiddleware = new AuthorizationMiddleware(this.keyStore);
+    const authMiddleware = new AuthorizationMiddleware(this.authKeyStore);
     this.application.use(authMiddleware.verifyToken);
   }
 
@@ -124,7 +119,7 @@ export class WebServer implements Runnable {
 
   public addGlobals() {
     this.application.set("cacheRegistry", this.cacheRegistry);
-    this.application.set("keyStore", this.keyStore);
+    this.application.set("keyStore", this.authKeyStore);
   }
 
   public start(): void {

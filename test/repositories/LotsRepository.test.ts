@@ -19,7 +19,7 @@ describe("LotsRepository", () => {
   test("LotsCache Population", async () => {
     const lotsCache = new LotsCache(repoRegistry);
     await lotsCache.fill();
-    console.log(lotsCache);
+    expect(lotsCache.length).toBeGreaterThanOrEqual(0);
   });
 
 });

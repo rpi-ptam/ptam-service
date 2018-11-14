@@ -3,14 +3,14 @@
 import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
- * Abstract Repository Class
+ * Repository Base-Class
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
-export abstract class Repository {
+export class Repository {
 
   protected readonly postgresDriver: PostgresDriver;
 
-  protected constructor(postgresDriver: PostgresDriver) {
+  public constructor(postgresDriver: PostgresDriver) {
     this.postgresDriver = postgresDriver;
   }
 

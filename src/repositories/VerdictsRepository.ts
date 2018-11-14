@@ -1,17 +1,12 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Verdicts Repository
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class VerdictsRepository extends Repository {
-
-  constructor(postgresDriver: PostgresDriver) {
-    super(postgresDriver);
-  }
 
   public async getAllVerdicts(): Promise<Map<number,string>> {
     const statement = "SELECT id, value FROM verdicts";
