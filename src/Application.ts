@@ -34,10 +34,11 @@ export class Application implements Runnable {
 
   private getAuthenticationKeyStore(): KeyStore {
     if (AUTH_USE_ENV) {
-      const privateKey = process.env.AUTH_PRIVATE_KEY;
-      const publicKey = process.env.AUTH_PUBLIC_KEY;
-      const algorithm = process.env.AUTH_ALGORITHM;
-      if (!privateKey || !publicKey || !algorithm) throw Error("Authentication environment variables are undefined!");
+      const { AUTH_PRIVATE_KEY, AUTH_PUBLIC_KEY, AUTH_ALGORITHM } = process.env;
+      if (!AUTH_PRIVATE_KEY || !AUTH_PUBLIC_KEY || !AUTH_ALGORITHM) throw Error("Authentication environment variables are undefined!");
+      const privateKey = Buffer.from(AUTH_PRIVATE_KEY, "base64").toString("utf8");
+      const publicKey = Buffer.from(AUTH_PUBLIC_KEY, "base64").toString("utf8");
+      const algorithm = AUTH_ALGORITHM;
       return new KeyStore(privateKey, publicKey, algorithm);
     }
     return new KeyStore(AUTH_PRIVATE_KEY, AUTH_PUBLIC_KEY, AUTH_ALGORITHM);
