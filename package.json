@@ -21,7 +21,9 @@
       "json"
     ],
     "collectCoverage": true,
-    "coverageReporters": ["lcov"]
+    "coverageReporters": [
+      "lcov"
+    ]
   },
   "repository": {
     "type": "git",
