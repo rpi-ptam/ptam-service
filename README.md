@@ -1,4 +1,4 @@
-## Rensselaer Parking-Ticket Appeal Management System - Service ##
+<h1 align="center">Rensselaer Parking-Ticket Appeal Management System - Service</h1>
 <p align="center">
   <a href="https://travis-ci.org/rpi-ptam/ptam-service"><img src="https://travis-ci.org/rpi-ptam/ptam-service.svg?branch=master" alt="TravisCI Build Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
