@@ -1,0 +1,17 @@
+language: node_js
+services:
+  - postgresql
+env:
+  - NODE_ENV=travis
+cache: npm
+
+before_script:
+  - psql -c 'CREATE DATABASE ptam_ci_testing;' -U postgres
+  # Run database migrations with schematron
+  - git clone git@github.com:rpi-ptam/schematron.git
+  - cd schematron && cd config && mv travis.json default.json
+  - cd .. && npm install && npm run migrate up && cd ..
+install:
+  - cd ptam-service && npm install && cd ..
+script:
+  - cd ptam-service && npm test
