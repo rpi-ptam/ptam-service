@@ -29,7 +29,7 @@ export class UsersController {
   public async getOwnInfo(req: AuthorizedRequest, res: Response) {
     const { usersRepository } = this.repoRegistry;
     try {
-      if (!req.user) throw Error("token mismatch");
+      if (!req.user || !req.user.id) throw Error("token mismatch");
 
       const user = await usersRepository.getById(req.user.id);
       if (!user) {

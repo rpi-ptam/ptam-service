@@ -178,7 +178,7 @@ export class AppealsController {
     const { ticketId, verdict, verdictComment } = req.body;
 
     try {
-      if (!req.user) throw Error("token mismatch");
+      if (!req.user || !req.user.id) throw Error("token mismatch");
 
       const verdictId = this.cacheRegistry.verdictsCache.getByValue(verdict);
       if (!verdictId) throw Error("verdict mismatch");

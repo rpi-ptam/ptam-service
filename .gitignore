@@ -67,3 +67,6 @@ typings/
 
 # Jest Coverage
 coverage/
+
+# Build outputs
+dist/

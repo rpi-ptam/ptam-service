@@ -35,7 +35,7 @@ export class TicketsController {
     const { external_id, lot, make, model, tag, plate_state, amount, issued_at, violation } = req.body;
 
     try {
-      if (!req.user) throw Error("user token mismatch");
+      if (!req.user || !req.user.id) throw Error("token mismatch");
 
       const lotId = lotsCache.getByValue(lot);
       if (!lotId) {
