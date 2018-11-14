@@ -1,4 +1,4 @@
-<h1 align="center">Rensselaer Parking-Ticket Appeal Management System - Service</h1>
+<h2 align="center">Rensselaer Parking-Ticket Appeal Management System - Service</h2>
 <p align="center">
   <a href="https://travis-ci.org/rpi-ptam/ptam-service"><img src="https://travis-ci.org/rpi-ptam/ptam-service.svg?branch=master" alt="TravisCI Build Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
@@ -36,7 +36,7 @@ The configuration system utilizes the `NODE_ENV` environment variable to determi
 > 2. Run the following command `setx NODE_ENV "development"`
 > 
 > _On Linux_:
-> 1. Edit the bash profile in ~.
+> 1. Edit the .bash_profile or .bashrc in your home directory.
 > 2. Append the following line to the end of the file `export NODE_ENV=development`
 > 3. Run source on your bash profile or restart the terminal. 
 
