@@ -1,7 +1,6 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 import { Ticket } from "../definitions/types/Ticket";
 
 /**
@@ -9,10 +8,6 @@ import { Ticket } from "../definitions/types/Ticket";
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class TicketsRepository extends Repository {
-
-  constructor(postgresDriver: PostgresDriver) {
-    super(postgresDriver);
-  }
 
   public async insertTicket(ticket: Ticket): Promise<number> {
     const statement = "INSERT INTO tickets (violator_id, external_id, lot_id, make, model, tag, plate_state_id, amount, issued_at, violation_type_id) "

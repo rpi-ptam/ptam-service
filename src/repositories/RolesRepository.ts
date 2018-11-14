@@ -1,17 +1,12 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Roles Repository
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class RolesRepository extends Repository {
-
-  constructor(postgresDriver: PostgresDriver) {
-    super(postgresDriver);
-  }
 
   public async getAllRoles(): Promise<Map<number,string>> {
     const statement = "SELECT id, name FROM Roles";

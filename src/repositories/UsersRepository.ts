@@ -1,7 +1,6 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 
 import { User } from "../definitions/types/User";
 
@@ -10,10 +9,6 @@ import { User } from "../definitions/types/User";
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class UsersRepository extends Repository {
-
-  constructor(databaseDriver: PostgresDriver) {
-    super(databaseDriver);
-  }
 
   public async getById(id: number): Promise<User|null> {
     const statement = "SELECT id, first_name, last_name, rcs_id, role_id "

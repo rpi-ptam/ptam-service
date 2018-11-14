@@ -1,17 +1,12 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * States Repository
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class StatesRepository extends Repository {
-
-  constructor(postgresDriver: PostgresDriver) {
-    super(postgresDriver);
-  }
 
   public async getAllStates(): Promise<Map<number,string>> {
     const statement = "SELECT id, abbreviation FROM states";

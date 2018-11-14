@@ -1,17 +1,12 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 
 /**
  * Violation Types Repository
  * @author Dylan L. Cheung <cheund3@rpi.edu>
  */
 export class ViolationTypesRepository extends Repository {
-
-  constructor(postgresDriver: PostgresDriver) {
-    super(postgresDriver);
-  }
 
   public async getAllViolationTypes(): Promise<Map<number,string>> {
     const statement = "SELECT id, type FROM violation_types";

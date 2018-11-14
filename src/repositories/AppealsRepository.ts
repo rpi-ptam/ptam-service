@@ -1,7 +1,6 @@
 "use strict";
 
 import { Repository } from "../definitions/Repository";
-import { PostgresDriver } from "../services/PostgresDriver";
 import { Appeal } from "../definitions/types/Appeal";
 import { AppealTicketPair } from "../definitions/types/AppealTicketPair";
 import { QueryResult } from "pg";
@@ -13,10 +12,6 @@ import {AppealStatistics} from "../definitions/types/AppealStatistics";
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
  */
 export class AppealsRepository extends Repository {
-
-  constructor(postgresDriver: PostgresDriver) {
-    super(postgresDriver);
-  }
 
   public async insertAppeal(appeal: Appeal): Promise<number> {
     const statement = "INSERT INTO appeals (ticket_id, justification, appealed_at) VALUES ($1, $2, $3) RETURNING id";
