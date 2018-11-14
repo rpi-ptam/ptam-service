@@ -10,9 +10,8 @@ This web-application will be utilized by the Rensselaer community to file and re
 
 _Authored by:_
  - Aaron J. Shapiro
- - Alex Ford
  - Dylan L. Cheung
- - Joshua Berman
+ - Joshua A. Berman
  - William Zawilinski
  
 ----------
