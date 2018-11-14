@@ -12,6 +12,11 @@ before_script:
   - git clone https://github.com/rpi-ptam/schematron.git
   - cd schematron/config && mv travis.json default.json && cd ../../
   - cd schematron && npm install && npm run migrate up && cd ..
+  # Prepare to report code-coverage to CodeClimate
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 script:
   - npm test
-  - npm run coveralls
+after_script:
+- ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

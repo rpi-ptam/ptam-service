@@ -7,8 +7,7 @@
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon --ext ts --exec ts-node ./src/index.ts",
-    "test": "jest",
-    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls"
+    "test": "jest"
   },
   "jest": {
     "transform": {
@@ -20,7 +19,9 @@
       "tsx",
       "js",
       "json"
-    ]
+    ],
+    "collectCoverage": true,
+    "coverageReporters": ["lcov"]
   },
   "repository": {
     "type": "git",
