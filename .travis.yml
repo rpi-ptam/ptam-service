@@ -11,7 +11,3 @@ before_script:
   - git clone git@github.com:rpi-ptam/schematron.git
   - cd schematron && cd config && mv travis.json default.json
   - cd .. && npm install && npm run migrate up && cd ..
-install:
-  - cd ptam-service && npm install && cd ..
-script:
-  - cd ptam-service && npm test
