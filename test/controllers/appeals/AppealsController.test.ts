@@ -6,16 +6,19 @@ import { CacheRegistry } from "../../../src/registries/CacheRegistry";
 import { TokenGenerator } from "../../_helpers/TokenGenerator";
 import { RepositoryRegistry } from "../../../src/registries/RepositoryRegistry";
 
-import { JUDICIAL_BOARD_MEMBER, STUDENT } from "../../../src/contants/Roles";
-import {MockTicket} from "../../_mocks/MockTicket";
-import {MockAppeal} from "../../_mocks/MockAppeal";
+import { STUDENT, JUDICIAL_BOARD_MEMBER } from "../../../src/contants/Roles";
+import { MockTicket } from "../../_mocks/MockTicket";
+import { MockAppeal } from "../../_mocks/MockAppeal";
+import { User } from "../../../src/definitions/types/User";
+import { MockUser } from "../../_mocks/MockUser";
 
 const WEB_SERVER_PORT: number = config.get("port");
 const REQUEST_BASE_URL = `http://localhost:${WEB_SERVER_PORT}`;
 
 /**
  * Appeals Controller - Test Suite
- * @author Joshua Berman beramj@rpi.edu
+ * @author Aaron J. Shapiro <shapia4@rpi.edu>
+ * @author Joshua A. Berman <beramj@rpi.edu>
  */
 describe("AppealsController", () => {
 
@@ -23,6 +26,9 @@ describe("AppealsController", () => {
 
   let repoRegistry: RepositoryRegistry;
   let cacheRegistry: CacheRegistry;
+  
+  let testingStudent: User;
+  let testingJudicialBoardMember: User;
 
   let tokenGenerator: TokenGenerator;
 
@@ -30,14 +36,25 @@ describe("AppealsController", () => {
     application = new Application();
     repoRegistry = new RepositoryRegistry();
     cacheRegistry = new CacheRegistry(repoRegistry);
-    tokenGenerator = new TokenGenerator(cacheRegistry);
+    tokenGenerator = new TokenGenerator();
 
     await application.start();
     await repoRegistry.start();
     await cacheRegistry.start();
+
+    /* Insert a dummy-student for testing */
+    testingStudent = MockUser.generateRandomUser(cacheRegistry, STUDENT);
+    testingStudent.id = await repoRegistry.usersRepository.create(testingStudent);
+
+    /* Insert a dummy-jboard-member for testing */
+    testingJudicialBoardMember = MockUser.generateRandomUser(cacheRegistry, JUDICIAL_BOARD_MEMBER);
+    testingJudicialBoardMember.id = await repoRegistry.usersRepository.create(testingJudicialBoardMember);
   });
 
   afterAll(async () => {
+    if (testingStudent.id) await repoRegistry.usersRepository.removeById(testingStudent.id);
+    if (testingJudicialBoardMember.id) await repoRegistry.usersRepository.removeById(testingJudicialBoardMember.id);
+
     await application.stop();
     await repoRegistry.stop();
     await cacheRegistry.stop();
@@ -68,7 +85,7 @@ describe("AppealsController", () => {
      * STUDENT ACCESS
      */
     test("Unauthorized User (Wrong Role) - 401", async () => {
-      const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, 1, STUDENT);
+      const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, testingStudent);
       const options = {
         ...baseOptions,
         jar: cookieJar
@@ -88,7 +105,7 @@ describe("AppealsController", () => {
      * MALFORMED REQUEST
      */
     test("Malformed Request (No Appeal Identifier) - 401" , async () => {
-      const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, 1, JUDICIAL_BOARD_MEMBER);
+      const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, testingJudicialBoardMember);
       const options = {
         ...baseOptions,
         jar: cookieJar
@@ -108,7 +125,7 @@ describe("AppealsController", () => {
      * INVALID APPEAL
      */
     test("Non-Existent Appeal - 200", async () => {
-      const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, 1, JUDICIAL_BOARD_MEMBER);
+      const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, testingJudicialBoardMember);
       const options = { ...baseOptions, jar: cookieJar, qs: { appeal_id: 0 } };
       const response = await request(options);
       expect(response.success).toBe(false);
@@ -127,7 +144,7 @@ describe("AppealsController", () => {
         const appeal = MockAppeal.getRandomAppeal(ticketId);
         appealId = await appealsRepository.insertAppeal(appeal);
 
-        const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, 1, JUDICIAL_BOARD_MEMBER);
+        const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, testingJudicialBoardMember);
         const options = { ...baseOptions, jar: cookieJar, qs: { appeal_id: appealId } };
 
         const response = await request(options);

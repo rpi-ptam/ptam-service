@@ -1,34 +1,28 @@
 import jwt from "jsonwebtoken";
 import request from "request-promise";
-
 import { CookieJar } from "request";
 
-import { CacheRegistry } from "../../src/registries/CacheRegistry";
-import { AuthenticationKeyStore } from "../../src/utilties/AuthenticationKeyStore";
+import { User } from "../../src/definitions/types/User";
 import { KeyStore } from "../../src/stores/KeyStore";
+import { AuthenticationKeyStore } from "../../src/utilties/AuthenticationKeyStore";
 
 export class TokenGenerator {
   
-  private readonly cacheRegistry: CacheRegistry;
   private readonly keyStore: KeyStore;
 
-  constructor(cacheRegistry: CacheRegistry) {
-    this.cacheRegistry = cacheRegistry;
+  constructor() {
     this.keyStore = AuthenticationKeyStore.getConfiguredStore();
   }
 
-  public async generateToken(userId: number, role: string): Promise<string> {
-    const { rolesCache } = this.cacheRegistry;
-    const roleId = rolesCache.getByValue(role);
-
+  public async generateToken(user: User): Promise<string> {
     const jwtConfig = { expiresIn: "1h", algorithm: this.keyStore.algorithm };
 
-    const tokenUser = { id: userId, role_id: roleId };
+    const tokenUser = { id: user.id, role_id: user.role_id };
     return await jwt.sign({ user: tokenUser }, this.keyStore.jwtPrivateKey, jwtConfig);
   }
 
-  public async getTokenCookies(apiUrl: string, userId: number, role: string): Promise<CookieJar> {
-    const token = await this.generateToken(userId, role);
+  public async getTokenCookies(apiUrl: string, user: User): Promise<CookieJar> {
+    const token = await this.generateToken(user);
 
     const jar = request.jar();
     const cookie = request.cookie(`x-access-token=${token}`);
