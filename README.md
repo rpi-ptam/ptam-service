@@ -50,6 +50,7 @@ The configuration system utilizes the `NODE_ENV` environment variable to determi
 
 Production Releases
 -------------
+This codebase strives to maintain a [API](https://restfulapi.net/statelessness/) and therefore can scale up to multiple instances through clustering or [reverse-proxying](http://nginx.org/en/docs/http/load_balancing.html) with [NGINX](http://nginx.org). Also be sure to run the corresponding [migrations](https://github.com/rpi-ptam/schematron) on the intended database.
 
  1. Configure a `production.json` file in the `config` directory.
  2. Run `npm run build` from the root directory of the project.
