@@ -1,4 +1,4 @@
-"use strict";
+import bind from "bind-decorator";
 
 import { Repository } from "../definitions/Repository";
 
@@ -8,6 +8,7 @@ import { Repository } from "../definitions/Repository";
  */
 export class ViolationTypesRepository extends Repository {
 
+  @bind
   public async getAllViolationTypes(): Promise<Map<number,string>> {
     const statement = "SELECT id, type FROM violation_types";
     const violationTypesResult = await this.postgresDriver.query(statement);
