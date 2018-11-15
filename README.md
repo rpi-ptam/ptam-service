@@ -6,13 +6,12 @@
   <a href="https://codeclimate.com/github/rpi-ptam/ptam-service/test_coverage"><img src="https://api.codeclimate.com/v1/badges/ff38ae6a8f36866d5eae/test_coverage" /></a>
 </p>
 
-This web-application will be utilized by the Rensselaer community to file and review parking ticket appeals. The application's dependency management in handled in NPM.
+This repository is the backend component of a web-application - for filing and reviewing parking ticket appeals - that will be utilized by the Students at <a href="https://rpi.edu" target="_blank">RPI</a>.
 
 _Authored by:_
  - Aaron J. Shapiro
- - Alex Ford
  - Dylan L. Cheung
- - Joshua Berman
+ - Joshua A. Berman
  - William Zawilinski
  
 ----------
