@@ -1,11 +1,11 @@
 "use strict";
 
-import { Repository } from "../definitions/Repository";
 import { Appeal } from "../definitions/types/Appeal";
+import { Repository } from "../definitions/Repository";
 import { AppealTicketPair } from "../definitions/types/AppealTicketPair";
-import { QueryResult } from "pg";
-import {Ticket} from "../definitions/types/Ticket";
-import {AppealStatistics} from "../definitions/types/AppealStatistics";
+import { AppealStatistics } from "../definitions/types/AppealStatistics";
+
+import { AppealTicketNormalizer } from "../utilties/normalizers/AppealTicketNormalizer";
 
 /**
  * Appeals Repository
@@ -23,10 +23,7 @@ export class AppealsRepository extends Repository {
     const statement = this.getAppealTicketPairQuery("a.id = $1");
     const result = await this.postgresDriver.query(statement, [id, 1]);
     if (result.rowCount < 1) return null;
-    return {
-      appeal: this.normalizeAppeal(result.rows[0]),
-      ticket: this.normalizeTicket(result.rows[0])
-    }
+    return AppealTicketNormalizer.normalizeResultPostgres(result.rows[0]);
   }
 
   public async getByTicketId(ticketId: number): Promise<Appeal|null> {
@@ -43,21 +40,21 @@ export class AppealsRepository extends Repository {
   }
 
   public async getUndecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealTicketPairQuery("a.reviewed_by IS NULL AND a.id >= $1");
-    const result = await this.postgresDriver.query(statement, [start, count]);
-    return this.normalizeBulkResult(result);
+    return this.getAppealsBulkPostgres(start, count, "a.reviewed_by IS NULL AND a.id >= $1");
   }
 
   public async getDecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealTicketPairQuery("a.reviewed_by IS NOT NULL AND a.id >= $1");
-    const result = await this.postgresDriver.query(statement, [start, count]);
-    return this.normalizeBulkResult(result);
+    return this.getAppealsBulkPostgres(start, count, "a.reviewed_by IS NOT NULL AND a.id >= $1");
   }
 
   public async getAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealTicketPairQuery("a.id >= $1");
+    return this.getAppealsBulkPostgres(start, count, "a.id >= $1");
+  }
+
+  private async getAppealsBulkPostgres(start: number, count: number, whereClause: string): Promise<Array<AppealTicketPair>> {
+    const statement = this.getAppealTicketPairQuery(whereClause);
     const result = await this.postgresDriver.query(statement, [start, count]);
-    return this.normalizeBulkResult(result);
+    return AppealTicketNormalizer.normalizeBulkResultPostgres(result);
   }
 
   public async removeById(id: number): Promise<void> {
@@ -88,47 +85,6 @@ export class AppealsRepository extends Repository {
       "INNER JOIN tickets t on a.ticket_id = t.id";
     const result = await this.postgresDriver.query(statement);
     return result.rows[0];
-  }
-
-  private normalizeAppeal(row: any): Appeal {
-    return {
-      id: row.a_id,
-      ticket_id: row.a_ticket_id,
-      justification: row.a_justification,
-      appealed_at: row.a_appealed_at,
-      verdict_id: row.a_verdict_id,
-      verdict: null,
-      verdict_comment: row.a_verdict_comment,
-      reviewed_by: row.a_reviewed_by,
-      reviewed_at: row.a_reviewed_at
-    }
-  }
-
-  private normalizeTicket(row: any): Ticket {
-    return {
-      id: row.t_id,
-      violator_id: row.t_violator_id,
-      external_id: row.t_external_id,
-      lot_id: row.t_lot_id,
-      make: row.t_make,
-      model: row.t_model,
-      tag: row.t_tag,
-      plate_state_id: row.t_plate_state_id,
-      amount: row.t_amount,
-      issued_at: row.t_issued_at,
-      violation_type_id: row.t_violation_type_id
-    }
-  }
-
-  private normalizeBulkResult(result: QueryResult): Array<AppealTicketPair> {
-    const pairs: Array<AppealTicketPair> = [];
-    for (let i = 0; i < result.rowCount; i++) {
-      const row = result.rows[i];
-      const appeal = this.normalizeAppeal(row);
-      const ticket = this.normalizeTicket(row);
-      pairs.push({ appeal, ticket });
-    }
-    return pairs;
   }
 
 }
