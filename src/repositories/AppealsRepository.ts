@@ -20,8 +20,8 @@ export class AppealsRepository extends Repository {
   }
 
   public async getWithTicketById(id: number): Promise<AppealTicketPair|null> {
-    const statement = this.getAppealTicketPairBaseQuery() + " WHERE a.id = $1";
-    const result = await this.postgresDriver.query(statement, [id]);
+    const statement = this.getAppealTicketPairQuery("a.id = $1");
+    const result = await this.postgresDriver.query(statement, [id, 1]);
     if (result.rowCount < 1) return null;
     return {
       appeal: this.normalizeAppeal(result.rows[0]),
@@ -43,24 +43,19 @@ export class AppealsRepository extends Repository {
   }
 
   public async getUndecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealTicketPairBaseQuery() +
-      "WHERE a.reviewed_by IS NULL AND a.id >= $1 " +
-      "ORDER BY a_id DESC LIMIT $2";
+    const statement = this.getAppealTicketPairQuery("a.reviewed_by IS NULL AND a.id >= $1");
     const result = await this.postgresDriver.query(statement, [start, count]);
     return this.normalizeBulkResult(result);
   }
 
   public async getDecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealTicketPairBaseQuery()
-      + "WHERE a.reviewed_by IS NOT NULL AND a.id >= $1 "
-      + "ORDER BY a_id DESC LIMIT $2";
+    const statement = this.getAppealTicketPairQuery("a.reviewed_by IS NOT NULL AND a.id >= $1");
     const result = await this.postgresDriver.query(statement, [start, count]);
     return this.normalizeBulkResult(result);
   }
 
   public async getAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
-    const statement = this.getAppealTicketPairBaseQuery()
-      + "WHERE a.id >= $1 ORDER BY a_id DESC LIMIT $2";
+    const statement = this.getAppealTicketPairQuery("a.id >= $1");
     const result = await this.postgresDriver.query(statement, [start, count]);
     return this.normalizeBulkResult(result);
   }
@@ -70,13 +65,14 @@ export class AppealsRepository extends Repository {
     await this.postgresDriver.query(statement, [id]);
   }
 
-  private getAppealTicketPairBaseQuery(): string {
+  private getAppealTicketPairQuery(whereClause: string): string {
     return "SELECT a.id as a_id, a.ticket_id as a_ticket_id, a.justification as a_justification, " +
       "a.appealed_at as a_appealed_at, a.verdict_id as a_verdict_id, a.verdict_comment as a_verdict_comment, " +
       "a.reviewed_by as a_reviewed_by, a.reviewed_at as a_reviewed_at, t.id as t_id, t.violator_id as t_violator_id, t.violation_type_id as t_violation_type_id, " +
       "t.external_id as t_external_id, t.lot_id as t_lot_id, t.make as t_make, t.model as t_model, t.tag as t_tag, " +
       "t.plate_state_id as t_plate_state_id, t.amount as t_amount, t.issued_at as t_issued_at " +
-      "FROM appeals a INNER JOIN tickets t ON a.ticket_id = t.id ";
+      "FROM appeals a INNER JOIN tickets t ON a.ticket_id = t.id " + 
+      "WHERE " + whereClause + " ORDER BY a_id DESC LIMIT $2";
   }
 
   public async getStatistics(): Promise<AppealStatistics> {
