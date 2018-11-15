@@ -5,6 +5,7 @@ import { Response } from "express";
 
 import { Logger } from "../../services/Logger";
 import { CacheRegistry } from "../../registries/CacheRegistry";
+import { AppealProcessor } from "../../utilties/AppealProcessor";
 import { RepositoryRegistry } from "../../registries/RepositoryRegistry";
 
 import { Appeal } from "../../definitions/types/Appeal";
@@ -19,7 +20,6 @@ import {
   JUDICIAL_BOARD_MEMBER,
   PARKING_OFFICE_OFFICIAL
 } from "../../contants/Roles";
-import {AppealProcessor} from "../utilities/AppealProcessor";
 
 /**
  * Appeals Controller
