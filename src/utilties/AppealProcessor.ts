@@ -1,5 +1,5 @@
-import { AppealTicketPair } from "../../definitions/types/AppealTicketPair";
-import { CacheRegistry } from "../../registries/CacheRegistry";
+import { AppealTicketPair } from "../definitions/types/AppealTicketPair";
+import { CacheRegistry } from "../registries/CacheRegistry";
 
 export class AppealProcessor {
 

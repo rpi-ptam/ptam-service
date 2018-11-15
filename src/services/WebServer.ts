@@ -15,15 +15,12 @@ import { CacheRegistry } from "../registries/CacheRegistry";
 import { RepositoryRegistry } from "../registries/RepositoryRegistry";
 import { AuthorizationMiddleware } from "../middleware/AuthorizationMiddleware";
 
-import { LotsRouter } from "../controllers/lots/LotsRouter";
 import { UsersRouter } from "../controllers/users/UsersRouter";
-import { StatesRouter } from "../controllers/states/StatesRouter";
 import { AppealsRouter } from "../controllers/appeals/AppealsRouter";
 import { AuthenticationRouter } from "../controllers/authentication/AuthenticationRouter";
-import {CorsMiddleware} from "../middleware/CorsMiddleware";
-import {ViolationTypesRouter} from "../controllers/violation_types/ViolationTypesRouter";
-import {VerdictsRouter} from "../controllers/verdicts/VerdictsRouter";
-import {TicketsRouter} from "../controllers/tickets/TicketsRouter";
+import { CorsMiddleware } from "../middleware/CorsMiddleware";
+import { TicketsRouter } from "../controllers/tickets/TicketsRouter";
+import { CacheControllerFactory } from "../controllers/generic/cache/CacheControllerFactory";
 
 const DEBUG: boolean = config.get("debug");
 
@@ -80,6 +77,22 @@ export class WebServer implements Runnable {
     this.application.use("/authentication", authRouter.router);
   }
 
+  private addCacheRouters() {
+    const { lotsCache, statesCache, violationTypesCache, verdictsCache } = this.cacheRegistry;
+
+    const lotsRouter = CacheControllerFactory.createCacheControllerRouter(lotsCache, "lots");
+    this.application.use("/lots", lotsRouter.router);
+
+    const statesRouter = CacheControllerFactory.createCacheControllerRouter(statesCache, "states");
+    this.application.use("/states", statesRouter.router);
+
+    const violationTypesRouter = CacheControllerFactory.createCacheControllerRouter(violationTypesCache, "violation_types");
+    this.application.use("/violation-types", violationTypesRouter.router);
+
+    const verdictsRouter = CacheControllerFactory.createCacheControllerRouter(verdictsCache, "verdicts");
+    this.application.use("/verdicts", verdictsRouter.router);
+  }
+
   public addRouters() {
     const appealsRouter = new AppealsRouter(this.repoRegistry, this.cacheRegistry);
     this.application.use("/appeals", appealsRouter.router);
@@ -87,20 +100,8 @@ export class WebServer implements Runnable {
     const usersRouter = new UsersRouter(this.repoRegistry, this.cacheRegistry);
     this.application.use("/users", usersRouter.router);
 
-    const lotsRouter = new LotsRouter(this.cacheRegistry);
-    this.application.use("/lots", lotsRouter.router);
-
-    const statesRouter = new StatesRouter(this.cacheRegistry);
-    this.application.use("/states", statesRouter.router);
-
-    const violationTypesRouter = new ViolationTypesRouter(this.cacheRegistry);
-    this.application.use("/violation-types", violationTypesRouter.router);
-
-    const verdictsRouter = new VerdictsRouter(this.cacheRegistry);
-    this.application.use("/verdicts", verdictsRouter.router);
-
     const ticketsRouter = new TicketsRouter(this.repoRegistry, this.cacheRegistry);
-    this.application.use("/tickets", ticketsRouter.router);
+    this.application.use("/tickets", ticketsRouter.router);    
   }
 
   public addAuthorizationMiddleware() {
@@ -128,6 +129,7 @@ export class WebServer implements Runnable {
     this.addAuthenticationRouter();
 
     this.addAuthorizationMiddleware();
+    this.addCacheRouters();
     this.addRouters();
 
     this.addGlobals();
