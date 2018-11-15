@@ -1,4 +1,4 @@
-"use strict";
+import bind from "bind-decorator";
 
 import { Repository } from "../definitions/Repository";
 
@@ -8,6 +8,7 @@ import { Repository } from "../definitions/Repository";
  */
 export class LotsRepository extends Repository {
 
+  @bind
   public async getAllLots(): Promise<Map<number,string>> {
     const statement = "SELECT id, name FROM lots ORDER BY name ASC";
     const lotsResult = await this.postgresDriver.query(statement);

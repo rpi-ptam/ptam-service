@@ -3,11 +3,7 @@
 import { Runnable } from "../definitions/Runnable";
 import { RepositoryRegistry } from "./RepositoryRegistry";
 
-import { LotsCache } from "../caches/LotsCache";
-import { RolesCache } from "../caches/RolesCache";
-import { StatesCache } from "../caches/StatesCache";
-import { VerdictsCache } from "../caches/VerdictsCache";
-import { ViolationTypesCache } from "../caches/ViolationTypesCache";
+import { DatabaseEnumCache } from "../caches/DatabaseEnumCache";
 
 /**
  * Cache Registry (mappings)
@@ -15,18 +11,18 @@ import { ViolationTypesCache } from "../caches/ViolationTypesCache";
  */
 export class CacheRegistry implements Runnable {
 
-  public readonly lotsCache: LotsCache;
-  public readonly rolesCache: RolesCache;
-  public readonly statesCache: StatesCache;
-  public readonly verdictsCache: VerdictsCache;
-  public readonly violationTypesCache: ViolationTypesCache;
+  public readonly lotsCache: DatabaseEnumCache;
+  public readonly rolesCache: DatabaseEnumCache;
+  public readonly statesCache: DatabaseEnumCache;
+  public readonly verdictsCache: DatabaseEnumCache;
+  public readonly violationTypesCache: DatabaseEnumCache;
 
   constructor(repoRegistry: RepositoryRegistry) {
-    this.lotsCache = new LotsCache(repoRegistry);
-    this.rolesCache = new RolesCache(repoRegistry);
-    this.statesCache = new StatesCache(repoRegistry);
-    this.verdictsCache = new VerdictsCache(repoRegistry);
-    this.violationTypesCache = new ViolationTypesCache(repoRegistry);
+    this.lotsCache = new DatabaseEnumCache(repoRegistry.lotsRepository.getAllLots);
+    this.rolesCache = new DatabaseEnumCache(repoRegistry.rolesRepository.getAllRoles);
+    this.statesCache = new DatabaseEnumCache(repoRegistry.statesRepository.getAllStates);
+    this.verdictsCache = new DatabaseEnumCache(repoRegistry.verdictsRepository.getAllVerdicts);
+    this.violationTypesCache = new DatabaseEnumCache(repoRegistry.violationTypesRepository.getAllViolationTypes);
   }
 
   async start(): Promise<void> {

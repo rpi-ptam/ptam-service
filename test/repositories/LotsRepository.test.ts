@@ -1,7 +1,7 @@
 "use strict";
 
+import { DatabaseEnumCache } from "../../src/caches/DatabaseEnumCache";
 import { RepositoryRegistry } from "../../src/registries/RepositoryRegistry";
-import { LotsCache } from "../../src/caches/LotsCache";
 
 describe("LotsRepository", () => {
 
@@ -17,7 +17,7 @@ describe("LotsRepository", () => {
   });
 
   test("LotsCache Population", async () => {
-    const lotsCache = new LotsCache(repoRegistry);
+    const lotsCache = new DatabaseEnumCache(repoRegistry.lotsRepository.getAllLots);
     await lotsCache.fill();
     expect(lotsCache.length).toBeGreaterThanOrEqual(0);
   });
