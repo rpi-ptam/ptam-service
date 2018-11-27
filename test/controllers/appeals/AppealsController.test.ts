@@ -139,7 +139,11 @@ describe("AppealsController", () => {
 
       let requestError = null;
       try {
-        const ticket = MockTicket.getRandomTicket(1);
+        if (!testingStudent.id) {
+          fail("Testing-Student is malformed, cannot run test!");
+          return;
+        }
+        const ticket = MockTicket.getRandomTicket(testingStudent.id);
         ticketId = await ticketsRepository.insertTicket(ticket);
         const appeal = MockAppeal.getRandomAppeal(ticketId);
         appealId = await appealsRepository.insertAppeal(appeal);
