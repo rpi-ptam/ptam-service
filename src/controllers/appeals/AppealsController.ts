@@ -1,4 +1,6 @@
-"use strict";
+import { ADJUSTED } from "../../contants/Verdicts";
+
+;
 
 import bind from "bind-decorator";
 import { Response } from "express";
@@ -135,7 +137,7 @@ export class AppealsController {
 
       /* Prepare the appeal literal */
       const appeal: Appeal = { ticket_id, justification: justification, appealed_at: "NOW()", verdict: null };
-      await appealsRepository.insertAppeal(appeal);
+      await appealsRepository.create(appeal);
 
       /* Respond gracefully */
       res.status(200).json({ success: true });
@@ -172,26 +174,37 @@ export class AppealsController {
    */
   @bind
   @Roles(JUDICIAL_BOARD_MEMBER, JUDICIAL_BOARD_CHAIR)
-  @RequiredParams("ticket_id", "verdict")
+  @RequiredParams("appeal_id", "verdict")
   public async createVerdict(req: AuthorizedRequest, res: Response): Promise<void> {
     const { appealsRepository } = this.repoRegistry;
-    const { ticketId, verdict, verdictComment } = req.body;
+    const { appeal_id, verdict, verdict_comment, adjustment_amount } = req.body;
 
     try {
       if (!req.user || !req.user.id) throw Error("token mismatch");
 
       const verdictId = this.cacheRegistry.verdictsCache.getByValue(verdict);
-      if (!verdictId) throw Error("verdict mismatch");
-
-      /* Verify that the underlying appeal exists */
-      const appeal = await appealsRepository.getByTicketId(ticketId);
-      /* If the referenced appeal does not exist, there cannot be an appeal */
-      if (appeal === null) {
-        res.status(404).json({ success: false, error: "APPEAL_NOT_FOUND" });
+      if (!verdictId) {
+        res.status(400).json({ success: false, error: "INVALID_VERDICT" });
         return;
       }
 
-      await appealsRepository.updateVerdict(ticketId, verdictId, verdictComment, req.user.id);
+      if (verdict === ADJUSTED && !adjustment_amount) {
+        res.status(400).json({ success: false, error: "ADJUSTMENT_AMOUNT_REQUIRED"});
+        return;
+      }
+
+      /* Verify that the underlying appeal exists */
+      const appeal = await appealsRepository.getById(appeal_id);
+      /* If the referenced appeal does not exist, there cannot be an appeal */
+      if (appeal === null) {
+        res.status(200).json({ success: false, error: "APPEAL_NOT_FOUND" });
+        return;
+      }
+
+      verdict === ADJUSTED ? await appealsRepository.updateVerdictWithAmount(appeal_id, verdictId, verdict_comment || null, req.user.id, adjustment_amount)
+        : await appealsRepository.updateVerdict(appeal_id, verdictId, verdict_comment || null, req.user.id);
+
+      res.status(200).json({ success: true });
     }
     catch (error) {
       Logger.error(error);

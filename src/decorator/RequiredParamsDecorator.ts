@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { Request, Response } from "express";
 import { ParameterValidator } from "../utilties/ParameterValidator";

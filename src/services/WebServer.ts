@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import http from "http";
 import helmet from "helmet";

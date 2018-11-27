@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { CacheRegistry } from "../../registries/CacheRegistry";
 

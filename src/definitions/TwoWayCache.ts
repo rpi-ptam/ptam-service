@@ -1,4 +1,4 @@
-"use strict";
+;
 
 /**
  * Two-Way Cache (Keys and Values are UQ)

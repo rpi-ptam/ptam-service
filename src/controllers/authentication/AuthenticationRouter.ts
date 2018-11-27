@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { ClientConfig } from "logical-cas-client";
 import { ControllerRouter } from "../../definitions/ControllerRouter";

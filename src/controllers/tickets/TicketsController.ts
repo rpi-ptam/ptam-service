@@ -64,7 +64,7 @@ export class TicketsController {
       const ticket: Ticket = { violator_id: req.user.id, external_id: external_id,  lot_id: lotId, plate_state_id: stateId,
         make: make, model: model, tag: tag, amount: amount, issued_at: issued_at, violation_type_id: violationId };
 
-      const ticketId = await ticketsRepository.insertTicket(ticket);
+      const ticketId = await ticketsRepository.create(ticket);
       res.status(200).json({ success: true, ticket_id: ticketId });
     }
     catch (error) {

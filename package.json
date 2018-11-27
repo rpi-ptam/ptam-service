@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon --ext ts --exec ts-node ./src/index.ts",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "jest": {
     "transform": {

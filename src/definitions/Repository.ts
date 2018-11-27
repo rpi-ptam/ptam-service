@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { PostgresDriver } from "../services/PostgresDriver";
 
