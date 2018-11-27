@@ -60,6 +60,8 @@ describe("AppealsController", () => {
     await cacheRegistry.stop();
   });
 
+
+
   /**
    * GET INDIVIDUAL APPEAL ENDPOINT
    */
@@ -159,6 +161,49 @@ describe("AppealsController", () => {
         if (ticketId) await ticketsRepository.removeById(ticketId);
       }
       if (requestError) fail(requestError);
+    });
+
+  });
+
+  /**
+   * APPEAL CREATION ENDPOINT
+   */
+  describe("POST /create", () => {
+    const baseOptions = { method: "POST", json: true, url: REQUEST_BASE_URL + "/appeals/create" };
+
+    /**
+     * NO TOKEN PROVIDED
+     */
+    test("Unauthorized Request (No Token) - 401", async () => {
+      try {
+        await request(baseOptions);
+        fail("Attempting to make this request should throw an exception");
+      }
+      catch (error) {
+        expect(error.statusCode).toBe(401);
+        expect(error.response.body.success).toBe(false);
+        expect(error.response.body.error).toBe("UNAUTHORIZED");
+      }
+    });
+
+    /**
+     * NON-STUDENT ACCESS
+     */
+    test("Unauthorized User (Wrong Role) - 401", async () => {
+      const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, testingJudicialBoardMember);
+      const options = {
+        ...baseOptions,
+        jar: cookieJar
+      };
+      try {
+        await request(options);
+        fail("Attempting to make this request should throw an exception");
+      }
+      catch (error) {
+        expect(error.statusCode).toBe(401);
+        expect(error.response.body.success).toBe(false);
+        expect(error.response.body.error).toBe("UNAUTHORIZED");
+      }
     });
 
   });

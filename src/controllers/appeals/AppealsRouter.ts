@@ -1,5 +1,3 @@
-"use strict";
-
 import { ControllerRouter } from "../../definitions/ControllerRouter";
 
 import { CacheRegistry } from "../../registries/CacheRegistry";
