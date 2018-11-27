@@ -44,6 +44,12 @@ The configuration system utilizes the `NODE_ENV` environment variable to determi
  1. Copy the contents `default.json` from the `config` folder and create a `development.json` file in the same directory.
  2. Fill out the configuration file as necessary, i.e. configure the database.
  
+ ### Generating Authentication Signature-Keys: 
+ It's recommended to use an elliptic curve algorithm:
+ - `openssl ecparam -genkey -name secp384r1 -noout -out auth_signatures.pem` 
+ - `openssl ec -in auth_signatures.pem -pubout`
+ - Copy the values from both of these outputs into your configuration file. Since JSON doesnt allow multiple lines remove them from the keys but replace them with `\n`.
+ 
  Once the configuration is set up, run `npm run dev` from the root directory of the project.
 
 ----------

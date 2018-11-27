@@ -1,7 +1,13 @@
-# Use Case
+# WebStorm
 .idea/
+
+# Configuration Files
 config/development.json
 config/test.json
+config/production.json
+
+# Signature Outputs
+auth_signatures.pem
 
 # Logs
 logs
