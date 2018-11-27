@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { Repository } from "../definitions/Repository";
 import { Ticket } from "../definitions/types/Ticket";

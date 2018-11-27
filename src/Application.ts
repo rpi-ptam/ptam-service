@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import config from "config";
 import { Runnable } from "./definitions/Runnable";

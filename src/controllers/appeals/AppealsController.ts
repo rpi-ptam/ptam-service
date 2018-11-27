@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import bind from "bind-decorator";
 import { Response } from "express";

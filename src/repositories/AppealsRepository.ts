@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { Appeal } from "../definitions/types/Appeal";
 import { Repository } from "../definitions/Repository";

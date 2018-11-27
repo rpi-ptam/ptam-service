@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { TwoWayCache } from "../definitions/TwoWayCache";
 

@@ -47,7 +47,6 @@ export class AuthenticationController {
    */
   @bind
   private async authenticationSuccess(req: Request, res: Response, rcsId: string) {
-    void (req);
     const { usersRepository } = this.repoRegistry;
     try {
       const user = await usersRepository.getByRcsId(rcsId);
@@ -72,8 +71,6 @@ export class AuthenticationController {
 
   @bind
   private async authenticationFailure(req: Request, res: Response, error: any) {
-    void (req);
-    void (error);
     res.redirect(CLIENT_FRIENDLY_URL + "/login/failure");
   }
 

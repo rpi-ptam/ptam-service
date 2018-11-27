@@ -1,4 +1,4 @@
-"use strict";
+;
 
 import { Response } from "express";
 import { CacheRegistry } from "../registries/CacheRegistry";
