@@ -13,7 +13,7 @@ import { AppealTicketNormalizer } from "../utilties/normalizers/AppealTicketNorm
  */
 export class AppealsRepository extends Repository {
 
-  public async insertAppeal(appeal: Appeal): Promise<number> {
+  public async create(appeal: Appeal): Promise<number> {
     const statement = "INSERT INTO appeals (ticket_id, justification, appealed_at) VALUES ($1, $2, $3) RETURNING id";
     const result = await this.postgresDriver.query(statement, [appeal.ticket_id, appeal.justification, "NOW()"]);
     return result.rows[0]["id"];
@@ -26,17 +26,22 @@ export class AppealsRepository extends Repository {
     return AppealTicketNormalizer.normalizeResultPostgres(result.rows[0]);
   }
 
-  public async getByTicketId(ticketId: number): Promise<Appeal|null> {
+  public async getById(id: number): Promise<Appeal | null> {
     const statement = "SELECT id, ticket_id, justification, appealed_at, verdict_id, verdict_comment, reviewed_by, reviewed_at "
-      + "FROM appeals WHERE ticket_id = $1";
-    const result = await this.postgresDriver.query(statement, [ticketId]);
+      + "FROM appeals WHERE id = $1";
+    const result = await this.postgresDriver.query(statement, [id]);
     if (result.rowCount < 1) return null;
     return result.rows[0];
   }
 
-  public async updateVerdict(ticketId: number, verdictId: number, verdictComment: string | null, reviewedBy: number): Promise<void> {
-    const statement = "UPDATE appeals SET verdict_id = $1, verdict_comment = $2, reviewed_by = $3, reviewed_at = NOW() WHERE ticket_id = $4";
-    await this.postgresDriver.query(statement, [verdictId, verdictComment, reviewedBy, ticketId]);
+  public async updateVerdict(id: number, verdictId: number, verdictComment: string | null, reviewedBy: number): Promise<void> {
+    const statement = "UPDATE appeals SET verdict_id = $1, verdict_comment = $2, reviewed_by = $3, reviewed_at = NOW() WHERE id = $4";
+    await this.postgresDriver.query(statement, [verdictId, verdictComment, reviewedBy, id]);
+  }
+
+  public async updateVerdictWithAmount(id: number, verdictId: number, verdictComment: string | null, reviewedBy: number, adjustmentAmount: number): Promise<void> {
+    const statement = "UPDATE appeals SET verdict_id = $1, verdict_comment = $2, reviewed_by = $3, reviewed_at = NOW(), adjustment_amount = $4  WHERE id = $5";
+    await this.postgresDriver.query(statement, [verdictId, verdictComment, reviewedBy, adjustmentAmount, id]);
   }
 
   public async getUndecidedAppealsBulk(start: number, count: number): Promise<Array<AppealTicketPair>> {
@@ -60,6 +65,11 @@ export class AppealsRepository extends Repository {
   public async removeById(id: number): Promise<void> {
     const statement = "DELETE FROM appeals WHERE id = $1";
     await this.postgresDriver.query(statement, [id]);
+  }
+
+  public async removeByTicketId(ticketId: number): Promise<void> {
+    const statement = "DELETE FROM appeals WHERE ticket_id = $1";
+    await this.postgresDriver.query(statement, [ticketId]);
   }
 
   private getAppealTicketPairQuery(whereClause: string): string {

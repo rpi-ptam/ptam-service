@@ -1,5 +1,3 @@
-;
-
 import { ControllerRouter } from "../../definitions/ControllerRouter";
 
 import { CacheRegistry } from "../../registries/CacheRegistry";
@@ -26,6 +24,7 @@ export class AppealsRouter extends ControllerRouter {
     this.router.get("/statistics/get", this.controller.getStatistics);
     this.router.get("/bulk/get", this.controller.getAppealsBulk);
     this.router.post("/create", this.controller.createAppeal);
+    this.router.post("/verdict/create", this.controller.createVerdict);
   }
 
 }
