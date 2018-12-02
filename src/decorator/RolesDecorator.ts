@@ -1,5 +1,3 @@
-;
-
 import { Response } from "express";
 import { CacheRegistry } from "../registries/CacheRegistry";
 import { AuthorizedRequest } from "../definitions/AuthorizedRequest";
