@@ -47,7 +47,7 @@ The configuration system utilizes the `NODE_ENV` environment variable to determi
  ### Generating Authentication Signature-Keys: 
  It's recommended to use an elliptic curve algorithm:
  - `openssl ecparam -genkey -name secp384r1 -noout -out auth_signatures.pem` 
- - `openssl ec -in auth_signatures.pem -pubout`
+ - `openssl ec -in auth_signatures.pem -pubout -out auth_signatures_public.pem`
  - Copy the values from both of these outputs into your configuration file. Since JSON doesnt allow multiple lines remove them from the keys but replace them with `\n`.
  
  Once the configuration is set up, run `npm run dev` from the root directory of the project.
