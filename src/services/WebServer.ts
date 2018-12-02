@@ -1,5 +1,3 @@
-;
-
 import http from "http";
 import helmet from "helmet";
 import config from "config";
