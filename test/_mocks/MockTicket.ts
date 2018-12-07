@@ -13,7 +13,7 @@ export class MockTicket {
       model: chance.word(),
       tag: chance.string({ length: 8 }),
       plate_state_id: 1,
-      amount: chance.integer({ min: 10, max: 100}),
+      amount: chance.integer({ min: 10, max: 100}) + .01,
       issued_at: "NOW()",
       violation_type_id: 1
     }
