@@ -8,6 +8,7 @@ config/production.json
 
 # Signature Outputs
 auth_signatures.pem
+auth_signatures_public.pem
 
 # Logs
 logs
