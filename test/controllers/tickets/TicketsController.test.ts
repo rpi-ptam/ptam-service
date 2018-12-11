@@ -11,6 +11,7 @@ import { STUDENT, JUDICIAL_BOARD_MEMBER } from "../../../src/contants/Roles";
 
 import { MockUser } from "../../_mocks/MockUser";
 import { MockTicket } from "../../_mocks/MockTicket";
+import { MockAppeal } from "../../_mocks/MockAppeal";
 
 const WEB_SERVER_PORT: number = config.get("port");
 const REQUEST_BASE_URL = `http://localhost:${WEB_SERVER_PORT}`;
@@ -139,9 +140,9 @@ describe("TicketsController", () => {
       let requestError = null;
       try {
         const ticket = MockTicket.getRandomTicket(1);
-        ticketId = await ticketsRepository.insertTicket(ticket);
+        ticketId = await ticketsRepository.create(ticket);
         const appeal = MockAppeal.getRandomAppeal(ticketId);
-        appealId = await appealsRepository.insertAppeal(appeal);
+        appealId = await appealsRepository.create(appeal);
 
         const cookieJar = await tokenGenerator.getTokenCookies(REQUEST_BASE_URL, testingJudicialBoardMember);
         const options = { ...baseOptions, jar: cookieJar, qs: { appeal_id: appealId } };

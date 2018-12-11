@@ -1,5 +1,3 @@
-;
-
 /**
  * Two-Way Cache (Keys and Values are UQ)
  * @author Aaron J. Shapiro <shapia4@rpi.edu>
