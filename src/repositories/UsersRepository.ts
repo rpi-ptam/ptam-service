@@ -32,7 +32,7 @@ export class UsersRepository extends Repository {
   }
 
   public async updateRole(userId: number, roleId: number): Promise<number> {
-    const statement = "UPDATE users SET role_id = $1 WHERE user_id = $2";
+    const statement = "UPDATE users SET role_id = $1 WHERE id = $2";
     const result = await this.postgresDriver.query(statement, [roleId, userId]);
     return result.rowCount;
   }
