@@ -1,5 +1,3 @@
-;
-
 import { Pool, PoolConfig, QueryResult } from "pg";
 import { DatabaseDriver } from "../definitions/DatabaseDriver";
 
