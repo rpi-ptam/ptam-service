@@ -20,7 +20,7 @@ describe("TicketsRepository", () => {
 
   let mockStudent: User;
 
-  let ticket: Ticket;
+  let testingTicket: Ticket;
   let ticketId: number;
 
   beforeAll(async () => {
@@ -34,7 +34,8 @@ describe("TicketsRepository", () => {
     mockStudent = MockUser.generateRandomUser(cacheRegistry, "STUDENT");
     mockStudent.id = await repoRegistry.usersRepository.create(mockStudent);
 
-    ticket = MockTicket.getRandomTicket(mockStudent.id!);
+    testingTicket = MockTicket.getRandomTicket(mockStudent.id!);
+
   });
 
   afterAll(async () => {
@@ -45,15 +46,16 @@ describe("TicketsRepository", () => {
   test("Valid insertion of a ticket", async () => {
     const { ticketsRepository } = repoRegistry;
 
-    ticketId = await ticketsRepository.create(ticket);
+    ticketId = await ticketsRepository.create(testingTicket);
     expect(typeof ticketId).toBe("number");
+    testingTicket.id = ticketId;
   });
 
   test("Duplicate insertion of a ticket", async () => {
     const { ticketsRepository } = repoRegistry;
 
     try {
-      await ticketsRepository.create(ticket);
+      await ticketsRepository.create(testingTicket);
       fail("Insertion of a ticket with the same external-id should throw an exception");
     } 
     catch (error) {
@@ -65,40 +67,45 @@ describe("TicketsRepository", () => {
   test("Valid fetch of ticket by external id", async () => {
     const { ticketsRepository } = repoRegistry;
   
-    const returnedTicket = await ticketsRepository.getByExternalId(ticket.external_id);
+    const returnedTicket = await ticketsRepository.getByExternalId(testingTicket.external_id);
     if (!returnedTicket) throw("Should fetch the ticket successfully");
 
-    expect(ticket.violator_id).toBe(ticket.violator_id);
-    expect(ticket.violator_id).toBe(returnedTicket.violator_id);
-    expect(ticket.external_id).toBe(returnedTicket.external_id);
-    expect(ticket.lot_id).toBe(returnedTicket.lot_id);
-    expect(ticket.make).toBe(returnedTicket.make);
-    expect(ticket.model).toBe(returnedTicket.model);
-    expect(ticket.tag).toBe(returnedTicket.tag);
-    expect(ticket.plate_state_id).toBe(returnedTicket.plate_state_id);
-    // expect(Number(ticket.amount)).toEqual(Number(returnedTicket.amount));
-    expect(moment.isDate(returnedTicket.issued_at)).toBe(true);
-    expect(ticket.violation_type_id).toBe(returnedTicket.violation_type_id);
+    expect(returnedTicket!.id).toBe(testingTicket.id!);
+    expect(returnedTicket!.violator_id).toBe(testingTicket.violator_id);
+    expect(returnedTicket!.external_id).toBe(testingTicket.external_id);
+    expect(returnedTicket!.lot_id).toBe(testingTicket.lot_id);
+    expect(returnedTicket!.make).toBe(testingTicket.make);
+    expect(returnedTicket!.model).toBe(testingTicket.model);
+    expect(returnedTicket!.tag).toBe(testingTicket.tag);
+    expect(returnedTicket!.plate_state_id).toBe(testingTicket.plate_state_id);
+    expect(moment.isDate(returnedTicket!.issued_at)).toBe(true);
+    expect(returnedTicket!.violation_type_id).toBe(testingTicket.violation_type_id);
   });
 
-  test("Invalid fetch of ticket by external id", async () => {
-
-  });
 
   test("Valid fetch of ticket by internal id", async () => {
-
+    const returnedTicket = await repoRegistry.ticketsRepository.getById(testingTicket.id!);
+    if(!returnedTicket) {
+      fail("Should return a valid ticket, not null")
+    }
+    expect(returnedTicket!.id).toBe(testingTicket.id);
+    expect(returnedTicket!.violator_id).toBe(testingTicket.violator_id);
+    expect(returnedTicket!.external_id).toBe(testingTicket.external_id);
+    expect(returnedTicket!.lot_id).toBe(testingTicket.lot_id);
+    expect(returnedTicket!.make).toBe(testingTicket.make);
+    expect(returnedTicket!.model).toBe(testingTicket.model);
+    expect(returnedTicket!.tag).toBe(testingTicket.tag);
+    expect(returnedTicket!.plate_state_id).toBe(testingTicket.plate_state_id);
+    expect(moment.isDate(returnedTicket!.issued_at)).toBe(true);
+    expect(returnedTicket!.violation_type_id).toBe(testingTicket.violation_type_id);
   });
 
-  test("Invalid fetch of ticket by internal id", async () => {
-
-  });
 
   test("Valid removal of ticket by internal id", async () => {
-
+    await repoRegistry.ticketsRepository.removeById(testingTicket.id!);
+    const result = await repoRegistry.ticketsRepository.getById(testingTicket.id!);
+    expect(result).toBe(null);
   });
 
-  test("Invalid removal of ticket by internal id", async () => {
-
-  });
 
 });
