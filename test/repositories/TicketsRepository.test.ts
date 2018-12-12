@@ -57,6 +57,7 @@ describe("TicketsRepository", () => {
     try {
       await ticketsRepository.create(testingTicket);
       fail("Insertion of a ticket with the same external-id should throw an exception");
+      return;
     } 
     catch (error) {
       expect(error.message).toContain("duplicate key value");
@@ -66,10 +67,12 @@ describe("TicketsRepository", () => {
 
   test("Valid fetch of ticket by external id", async () => {
     const { ticketsRepository } = repoRegistry;
-  
     const returnedTicket = await ticketsRepository.getByExternalId(testingTicket.external_id);
-    if (!returnedTicket) throw("Should fetch the ticket successfully");
 
+    if (!returnedTicket) {
+      fail("Should fetch the ticket successfully");
+      return;
+    }
     expect(returnedTicket!.id).toBe(testingTicket.id!);
     expect(returnedTicket!.violator_id).toBe(testingTicket.violator_id);
     expect(returnedTicket!.external_id).toBe(testingTicket.external_id);
@@ -86,7 +89,8 @@ describe("TicketsRepository", () => {
   test("Valid fetch of ticket by internal id", async () => {
     const returnedTicket = await repoRegistry.ticketsRepository.getById(testingTicket.id!);
     if(!returnedTicket) {
-      fail("Should return a valid ticket, not null")
+      fail("Should return a valid ticket, not null");
+      return;
     }
     expect(returnedTicket!.id).toBe(testingTicket.id);
     expect(returnedTicket!.violator_id).toBe(testingTicket.violator_id);
