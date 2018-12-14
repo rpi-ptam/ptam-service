@@ -1,7 +1,3 @@
-import { ADJUSTED } from "../../contants/Verdicts";
-
-;
-
 import bind from "bind-decorator";
 import { Response } from "express";
 
@@ -15,6 +11,8 @@ import { AuthorizedRequest } from "../../definitions/AuthorizedRequest";
 
 import { Roles } from "../../decorator/RolesDecorator";
 import { RequiredParams } from "../../decorator/RequiredParamsDecorator";
+
+import { ADJUSTED } from "../../contants/Verdicts";
 
 import {
   STUDENT,
